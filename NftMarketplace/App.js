@@ -18,14 +18,14 @@ export default function App() {
   return (
     <NavigationContainer >
       <Stack.Navigator>
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Welcome"
           component={WelcomeScreen}
           options={{ headerShown: false ,contentStyle:{backgroundColor: "white",} }}
           style={styles.container}
         />
         <Stack.Screen name="Login" component={LoginScreen} options={{headerTitle:"" ,headerTransparent:true}}/>
-        <Stack.Screen name="Register" component={RegisterScreen} options={{headerTitle:"" ,headerTransparent:true}}/>
+        <Stack.Screen name="Register" component={RegisterScreen} options={{headerTitle:"" ,headerTransparent:true}}/> */}
         <Stack.Screen name="Dashboard" component={Dashboard} options={{headerTitle:"" ,headerTransparent:true}}/>
 
       </Stack.Navigator>

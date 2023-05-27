@@ -4,27 +4,35 @@ import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";
+import PaintingPic from "./PaintingPic";
 
 import * as FaceDetector from "expo-face-detector";
 
 import axios from "axios";
 
-const URL = "http://10.10.32.79:5000/api/attachments";
+const URL = "http://139.59.69.142:5000/api/attachments";
 
-const config = {
-  headers: {
-    "content-type": "multipart/form-data",
-  },
-};
+const newURL = "http://139.59.69.142:5000/api/products";
 
-export default function ArtistPic({ navigation }) {
+//ssh root@139.59.69.142
+//http://10.10.32.79:5000/api/attachments
+//http://139.59.69.142:5000/api/attachments
+//http://10.10.32.79:5000/api/products
+
+var galleryArray = [];
+var mainImage = {};
+var productObject = {};
+
+export default function ArtistPic(props) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [image, setImage] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.front);
+  const [imageUri, setImageUri] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
 
   const [faceData, setFaceData] = React.useState([]);
+
+  const [imageData, setImageData] = useState();
 
   useEffect(() => {
     (async () => {
@@ -60,11 +68,15 @@ export default function ArtistPic({ navigation }) {
   };
 
   const takePicture = async () => {
-    if (cameraRef && faceData.length > 0) {
+    if (cameraRef) {
+      //&& faceData.length > 0
       try {
-        const data = await cameraRef.current.takePictureAsync();
-        console.log(data);
-        setImage(data.uri);
+        const data = await cameraRef.current.takePictureAsync({
+          skipProcessing: true,
+        });
+        //console.log(data);
+        setImageData(data);
+        setImageUri(data.uri);
       } catch (error) {
         console.log(error);
       }
@@ -74,48 +86,114 @@ export default function ArtistPic({ navigation }) {
   };
 
   const savePicture = async () => {
-    if (image) {
-      try {
-        //const asset = await MediaLibrary.createAssetAsync(image);
-        // const response = await axios.post(URL, image, {
-        //   headers: {
-        //     "content-type": "multipart/form-data",
-        //   },
-        // });
-        // console.log(response);
+    if (imageUri) {
+      //try {
+        // const asset = await MediaLibrary.createAssetAsync(image);
 
         // const formData = new FormData();
-        // formData.append("file",{
-        //   image:image
-        // })
+        // formData.append("attachment", {
+        //   uri: imageUri,
+        //   name: "myimage.jpg",
+        //   fileName: "image",
+        //   type: "image/jpg",
+        // });
 
-        // const response = await fetch(URL,{
-        //   method: 'post',
-        //   body: formData,
+        // const response = await axios({
+        //   method: "post",
+        //   url: URL,
         //   headers: {
-        //     'Content-Type': 'multipart/form-data; ',
-        //   }},);
-        //   console.log(response);
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        //   data: formData,
+        // });
 
-        alert("Picture saved! 🎉");
-        setImage(null);
-        console.log("saved successfully");
+        // console.log(response.data[0].id);
+        // console.log(response.data[0].thumbnail);
+        // console.log(response.data[0]);
+
+        // galleryArray.push(response.data);
+        //console.log(galleryArray);
+        // mainImage = response.data[0];
+        //console.log(mainImage)
+
+        productObject = {
+          "price": 111,
+          "name": "rterrgd",
+          "description": "dfgdgdgeer",
+          "digital_file": {
+            "attachment_id": "683",
+            "original": "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
+            "thumbnail": "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg"
+          },
+          "categories": {
+            "name": "hyperledger"
+          },
+          "tags": [
+            {
+              "name": "abstract"
+            },
+            {
+              "name": "nouveau"
+            }
+          ],
+          "shop_id": "1681e7c0-deda-4612-b0f9-6d7c3611f8fb"
+        };
+
+     
+
+        //console.log(JSON.stringify(productObject))
+
+        const newResponse = await fetch(newURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(productObject), 
+        });
+
+        //  const newResponse = await axios({
+        //     method: "post",
+        //     url: newURL,
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     data: productObject
+        //   });
+          
+
+        //const newResponse = await axios.post(newURL,productObject);
+
+        console.log(newResponse)
+
+
+        // const newResponse = await axios.post(newURL, productObject, {
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //   });
+
+        //console.log(JSON.stringify(newResponse));
+
+        setImageUri(null);
+        //alert("Picture saved! 🎉");
+
+        //return <PaintingPic galleryArray={galleryArray}/>
+
+        //console.log("image saved successfully");
         //setCurrentScreen("painting");
-      } catch (error) {
-        console.log(error);
-      }
+      // } catch (error) {
+      //   console.log(error);
+      // }
     }
   };
 
   return (
     <View style={styles.container}>
-      {!image ? (
+      {!imageUri ? (
         <Camera
           style={styles.camera}
           type={type}
           ref={cameraRef}
           flashMode={flash}
-          autoFocus={true}
+          //autoFocus={true}
           onFacesDetected={handleFacesDetected}
           faceDetectorSettings={{
             mode: FaceDetector.FaceDetectorMode.fast,
@@ -167,11 +245,11 @@ export default function ArtistPic({ navigation }) {
           </View>
         </Camera>
       ) : (
-        <Image source={{ uri: image }} style={styles.camera} />
+        <Image source={{ uri: imageUri }} style={styles.camera} />
       )}
 
       <View style={styles.controls}>
-        {image ? (
+        {imageUri ? (
           <View
             style={{
               flexDirection: "row",
@@ -181,14 +259,14 @@ export default function ArtistPic({ navigation }) {
           >
             <Button
               title="Re-take"
-              onPress={() => setImage(null)}
+              onPress={() => setImageUri(null)}
               icon="retweet"
             />
             <Button
               title="Save"
               onPress={() => {
                 savePicture();
-                navigation.navigate("PaintingPic");
+                //props.navigation.navigate("PaintingPic");
               }}
               icon="check"
             />

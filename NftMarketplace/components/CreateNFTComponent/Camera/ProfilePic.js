@@ -51,7 +51,7 @@ export default function ProfilePic({setCurrentScreen}) {
   const takePicture = async () => {
     if (cameraRef && faceData.length > 0) {
       try {
-        const data = await cameraRef.current.takePictureAsync();
+        const data = await cameraRef.current.takePictureAsync({skipProcessing: true});
         console.log(data);
         setImage(data.uri);
         

@@ -5,7 +5,7 @@ import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";
 
-export default function PaintingPic({setCurrentScreen}) {
+export default function PaintingPic({setCurrentScreen,galleryArray}) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -15,6 +15,8 @@ export default function PaintingPic({setCurrentScreen}) {
   //capturing different pics
   const [hasFullPic, setHasFullPic] = useState(false);
   const [previousScreen, setPreviousScreen] = useState("");
+
+  var mainImage = {};
 
   useEffect(() => {
     (async () => {
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    top: 340,
+    top: 240,
    
   },
   cameraText: {

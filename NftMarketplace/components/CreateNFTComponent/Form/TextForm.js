@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { Button, TextInput, View, StyleSheet, Text } from "react-native";
 import { Formik } from "formik";
 import axios from "axios";
+import ArtistPic from "../Camera/ArtistPic";
 
-const URL = "http://10.10.32.79:5000/api/products";
+const URL = "http://10.10.32.79:3000";
 
 export default TextForm = (props) => {
   return (
@@ -14,12 +15,17 @@ export default TextForm = (props) => {
         initialValues={{ paintingName: "" }}
         onSubmit={async(values) =>{
           console.log(values)
-          try{const response = await axios.post(URL,values);
-          console.log(response)}
-          catch(err){
-            console.log(err);
-          }
+
+        //   try{const response = await axios.post(URL,values);
+        //   console.log(response)}
+        //   catch(err){
+        //     console.log(err);
+        //   }
+         //{<ArtistPic values={values}/>}
+          
         } }
+
+      
       >
         {({ handleChange, handleSubmit, values }) => (
           <View style={styles.inputContainer}>

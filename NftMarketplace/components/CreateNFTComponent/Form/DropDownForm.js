@@ -12,6 +12,7 @@ import {
   SelectList,
 } from "react-native-dropdown-select-list";
 import { Ionicons } from "@expo/vector-icons";
+import ArtistPic from "../Camera/ArtistPic";
 
 export default DropDownForm = ({navigation}) => {
   const [selectedSubject, setSelectedSubject] = useState([]);
@@ -128,6 +129,16 @@ export default DropDownForm = ({navigation}) => {
     {key:"14",value:"Dark Slate Blue"}
   ];
 
+  //data to server
+
+  //categories: orientation
+  //tags : style
+
+  // var categories = {}
+  // var tags = []
+
+
+  
   return (
     <ScrollView style={styles.container} overScrollMode="never">
             <Text style={styles.container_text}>Fill the details below : </Text>
@@ -225,7 +236,14 @@ export default DropDownForm = ({navigation}) => {
 
       <TouchableOpacity
         style={styles.container_button}
-        onPress={() =>
+        onPress={() =>{
+          //console.log(selectedStyle[1])
+          //tags.push(selectedStyle[0],selectedStyle[1])
+          //console.log(tags)
+         
+          //console.log(selectedOrientation)
+          //categories = {name:selectedOrientation}
+          //console.log(categories)
           Alert.alert(
             "You have selected : ",
             `Subject: ${selectedSubject}\n\nStyle: ${selectedStyle}\n\nMedium: ${selectedMedium}\n\nMaterial: ${selectedMaterial}\n\nQuality: ${selectedQuality}\n\nOriginal: ${selectedOriginal}\n\nSize: ${selectedSize}\n\nOrientation: ${selectedOrientation}\n\nColor: ${selectedColors}`,
@@ -239,6 +257,9 @@ export default DropDownForm = ({navigation}) => {
                 },
               ]
           )
+          //{<ArtistPic categories={categories} tags={tags}/>}
+            }
+          
         }
       >
         <Text

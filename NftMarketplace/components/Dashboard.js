@@ -20,7 +20,7 @@ export default Dashboard = () => {
           headerShown: false,
         }}
       >
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Home"
           component={Home}
           options={{
@@ -35,7 +35,7 @@ export default Dashboard = () => {
             tabBarLabel: "Explore",
             tabBarIcon: () => <MaterialIcons name="explore" size={23} />,
           }}
-        />
+        /> */}
         <Tab.Screen
           name="CreateNFT"
           component={CreateNFT}

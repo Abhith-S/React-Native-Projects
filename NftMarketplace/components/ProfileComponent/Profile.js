@@ -11,6 +11,8 @@ import {
 import {MaterialCommunityIcons} from 'react-native-vector-icons';
 import {Ionicons} from 'react-native-vector-icons';
 
+import Colors from '../../constants/Colors';
+
 export function Profile(){
 
   return (
@@ -64,31 +66,32 @@ export function Profile(){
       <View style={styles.menuWrapper}>
         <TouchableRipple onPress={() => {}}>
           <View style={styles.menuItem}>
-            <MaterialCommunityIcons name="heart-outline" color="#FF6347" size={25}/>
+            <MaterialCommunityIcons name="heart-outline" color={Colors.blue} size={25}/>
             <Text style={styles.menuItemText}>Your Favorites</Text>
           </View>
         </TouchableRipple>
         <TouchableRipple onPress={() => {}}>
           <View style={styles.menuItem}>
-            <MaterialCommunityIcons name="credit-card" color="#FF6347" size={25}/>
+            <MaterialCommunityIcons name="credit-card" color={Colors.blue} size={25}/>
             <Text style={styles.menuItemText}>Payment</Text>
           </View>
         </TouchableRipple>
         <TouchableRipple >
           <View style={styles.menuItem}>
-            <MaterialCommunityIcons name="share-outline" color="#FF6347" size={25}/>
+            <MaterialCommunityIcons name="share-outline" color={Colors.blue} size={25}/>
             <Text style={styles.menuItemText}>Tell Your Friends</Text>
           </View>
         </TouchableRipple>
         <TouchableRipple onPress={() => {}}>
           <View style={styles.menuItem}>
-            <MaterialCommunityIcons name="account-check-outline" color="#FF6347" size={25}/>
+            <MaterialCommunityIcons name="account-check-outline" color={Colors.blue} size={25}/>
             <Text style={styles.menuItemText}>Support</Text>
           </View>
         </TouchableRipple>
         <TouchableRipple onPress={() => {}}>
           <View style={styles.menuItem}>
-            <Ionicons name="settings-outline" color="#FF6347" size={25}/>
+            <Ionicons name="settings-outline" color={Colors.blue} size={25}/>
+            {/* earlier used red color - "#FF6347" */}
             <Text style={styles.menuItemText}>Settings</Text>
           </View>
         </TouchableRipple>
