@@ -12,7 +12,7 @@ import {
   SelectList,
 } from "react-native-dropdown-select-list";
 import { Ionicons } from "@expo/vector-icons";
-import ArtistPic from "../Camera/ArtistPic";
+import ArtistPic from "../Camera/ArtistPaintingPic";
 
 export default DropDownForm = ({navigation}) => {
   const [selectedSubject, setSelectedSubject] = useState([]);
@@ -253,7 +253,7 @@ export default DropDownForm = ({navigation}) => {
                   onPress: () => console.log('Cancel Pressed'),
                   style: 'cancel',
                 },
-                {text: 'OK', onPress: () => navigation.navigate("ArtistPic")
+                {text: 'OK', onPress: () => navigation.navigate("ArtistPaintingPic")
                 },
               ]
           )

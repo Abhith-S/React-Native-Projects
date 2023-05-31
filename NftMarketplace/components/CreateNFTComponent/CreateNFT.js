@@ -1,12 +1,14 @@
 import { StyleSheet, Text, TextInput, View, ScrollView } from "react-native";
-import DropDownForm from "./Form/DropDownForm";
 import { useState } from "react";
-import PicturePage from "./Camera/PicturePage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import DropDownForm from "./Form/DropDownForm";
 import TextForm from "./Form/TextForm";
-import ArtistPic from "./Camera/ArtistPic";
-import PaintingPic from "./Camera/PaintingPic";
+import ArtistPaintingPic from "./Camera/ArtistPaintingPic";
+import FullPaintingPic from "./Camera/FullPaintingPic";
+import RightPaintingPic from "./Camera/RightPaintingPic";
+import LeftPaintingPic from "./Camera/LeftPaintingPic";
+import Finished from "./Camera/Finished"
 
 const Stack = createNativeStackNavigator();
 
@@ -20,10 +22,13 @@ export default function CreateNFT() {
           headerBackVisible: false,
         }}
       >
-        {/* <Stack.Screen name="TextForm" component={TextForm} />
-        <Stack.Screen name="DropDownForm" component={DropDownForm} /> */}
-        <Stack.Screen name="ArtistPic" component={ArtistPic} />
-        <Stack.Screen name="PaintingPic" component={PaintingPic} />
+        <Stack.Screen name="TextForm" component={TextForm} />
+        {/* <Stack.Screen name="DropDownForm" component={DropDownForm} />
+        <Stack.Screen name="ArtistPaintingPic" component={ArtistPaintingPic} />
+        <Stack.Screen name="FullPaintingPic" component={FullPaintingPic} />
+        <Stack.Screen name="LeftPaintingPic" component={LeftPaintingPic}/>
+        <Stack.Screen name="RightPaintingPic" component={RightPaintingPic}/> */}
+        <Stack.Screen name="Finished" component={Finished}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

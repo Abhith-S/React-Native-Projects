@@ -1,27 +1,36 @@
 // Formik x React Native example
-import React, { useState } from "react";
+import React, { useState, createContext } from "react";
 import { Button, TextInput, View, StyleSheet, Text } from "react-native";
 import { Formik } from "formik";
 import axios from "axios";
-import ArtistPic from "../Camera/ArtistPic";
+import ArtistPic from "../Camera/ArtistPaintingPic";
+import RightPaintingPic from "../Camera/RightPaintingPic";
+
 
 const URL = "http://10.10.32.79:3000";
 
-export default TextForm = (props) => {
+//const ValuesContext = createContext();
+
+const TextForm = (props) => {
+
+ //const [formValues,setFormValues] = useState(null)
   return (
     <View style={styles.container}>
       <Text style={styles.container_text}>Fill the details below : </Text>
       <Formik
         initialValues={{ paintingName: "" }}
         onSubmit={async(values) =>{
-          console.log(values)
+          //console.log(JSON.stringify(values))
+          //setFormValues(values)
+         
+          
 
         //   try{const response = await axios.post(URL,values);
         //   console.log(response)}
         //   catch(err){
         //     console.log(err);
         //   }
-         //{<ArtistPic values={values}/>}
+         
           
         } }
 
@@ -33,7 +42,7 @@ export default TextForm = (props) => {
               style={styles.container_input}
               onChangeText={handleChange("paintingName")}
               value={values.paintingName}
-              placeholder="Paining Name"
+              placeholder="Painting Name"
             />
             <TextInput
               style={styles.container_input}
@@ -92,6 +101,7 @@ export default TextForm = (props) => {
           </View>
         )}
       </Formik>
+      {/* <ValuesContext.Provider value={{formValues}}><RightPaintingPic/></ValuesContext.Provider> */}
     </View>
   );
 };
@@ -128,3 +138,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+export default TextForm;
+//export {ValuesContext};

@@ -1,22 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
-import Constants from "expo-constants";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";
 
-export default function PaintingPic({setCurrentScreen,galleryArray}) {
+export default function LeftPaintingPic({navigation}) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
 
-  //capturing different pics
-  const [hasFullPic, setHasFullPic] = useState(false);
-  const [previousScreen, setPreviousScreen] = useState("");
-
-  var mainImage = {};
 
   useEffect(() => {
     (async () => {
@@ -50,15 +44,7 @@ export default function PaintingPic({setCurrentScreen,galleryArray}) {
         const asset = await MediaLibrary.createAssetAsync(image);
         alert("Picture saved! 🎉");
         setImage(null);
-        setHasFullPic(true);
-        previousScreen === ""
-          ? setPreviousScreen("full")
-          : previousScreen === "full"
-          ? setPreviousScreen("left")
-          : previousScreen === "left"
-          ? setPreviousScreen("right")
-          : setPreviousScreen("completed");
-        console.log("saved successfully");
+        navigation.navigate("RightPaintingPic")
       } catch (error) {
         console.log(error);
       }
@@ -110,21 +96,11 @@ export default function PaintingPic({setCurrentScreen,galleryArray}) {
               />
             </View>
             <View style={styles.cameraTextContainer}>
-              {previousScreen === "" ? (
+              
                 <Text style={styles.cameraText}>
-                  Take a photo of the entire painting
+                Take a photo of the left half of the painting
                 </Text>
-              ) : previousScreen === "full" ? (
-                <Text style={styles.cameraText}>
-                  Take a photo of the left half of the painting
-                </Text>
-              ) : previousScreen === "left" ? (
-                <Text style={styles.cameraText}>
-                  Take a photo of the right half of the painting
-                </Text>
-              ) : (
-                <Text style={styles.cameraText}>Finished</Text>
-              )}
+              
             </View>
           </View>
         </Camera>
@@ -199,7 +175,7 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    top: 240,
+    top: 200,
    
   },
   cameraText: {

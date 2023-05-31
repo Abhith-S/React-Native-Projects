@@ -4,8 +4,6 @@ import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";
-import PaintingPic from "./PaintingPic";
-
 import * as FaceDetector from "expo-face-detector";
 
 import axios from "axios";
@@ -23,14 +21,14 @@ var galleryArray = [];
 var mainImage = {};
 var productObject = {};
 
-export default function ArtistPic(props) {
+export default function ArtistPaintingPic(props) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
 
-  const [faceData, setFaceData] = React.useState([]);
+  const [faceData, setFaceData] = useState([]);
 
   const [imageData, setImageData] = useState();
 
@@ -88,100 +86,98 @@ export default function ArtistPic(props) {
   const savePicture = async () => {
     if (imageUri) {
       //try {
-        // const asset = await MediaLibrary.createAssetAsync(image);
+      // const asset = await MediaLibrary.createAssetAsync(image);
 
-        // const formData = new FormData();
-        // formData.append("attachment", {
-        //   uri: imageUri,
-        //   name: "myimage.jpg",
-        //   fileName: "image",
-        //   type: "image/jpg",
-        // });
+      // const formData = new FormData();
+      // formData.append("attachment", {
+      //   uri: imageUri,
+      //   name: "myimage.jpg",
+      //   fileName: "image",
+      //   type: "image/jpg",
+      // });
 
-        // const response = await axios({
-        //   method: "post",
-        //   url: URL,
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        //   data: formData,
-        // });
+      // const response = await axios({
+      //   method: "post",
+      //   url: URL,
+      //   headers: {
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      //   data: formData,
+      // });
 
-        // console.log(response.data[0].id);
-        // console.log(response.data[0].thumbnail);
-        // console.log(response.data[0]);
+      // console.log(response.data[0].id);
+      // console.log(response.data[0].thumbnail);
+      // console.log(response.data[0]);
 
-        // galleryArray.push(response.data);
-        //console.log(galleryArray);
-        // mainImage = response.data[0];
-        //console.log(mainImage)
+      // galleryArray.push(response.data);
+      //console.log(galleryArray);
+      // mainImage = response.data[0];
+      //console.log(mainImage)
 
-        productObject = {
-          "price": 111,
-          "name": "rterrgd",
-          "description": "dfgdgdgeer",
-          "digital_file": {
-            "attachment_id": "683",
-            "original": "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
-            "thumbnail": "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg"
-          },
-          "categories": {
-            "name": "hyperledger"
-          },
-          "tags": [
-            {
-              "name": "abstract"
-            },
-            {
-              "name": "nouveau"
-            }
-          ],
-          "shop_id": "1681e7c0-deda-4612-b0f9-6d7c3611f8fb"
-        };
+      // productObject = {
+      //   price: 111,
+      //   name: "rterrgd",
+      //   description: "dfgdgdgeer",
+      //   digital_file: {
+      //     attachment_id: "683",
+      //     original:
+      //       "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
+      //     thumbnail:
+      //       "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
+      //   },
+      //   categories: {
+      //     name: "hyperledger",
+      //   },
+      //   tags: [
+      //     {
+      //       name: "abstract",
+      //     },
+      //     {
+      //       name: "nouveau",
+      //     },
+      //   ],
+      //   shop_id: "1681e7c0-deda-4612-b0f9-6d7c3611f8fb",
+      // };
 
-     
+      // //console.log(JSON.stringify(productObject))
 
-        //console.log(JSON.stringify(productObject))
+      // const newResponse = await fetch(newURL, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(productObject),
+      // });
 
-        const newResponse = await fetch(newURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(productObject), 
-        });
+      //  const newResponse = await axios({
+      //     method: "post",
+      //     url: newURL,
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     data: productObject
+      //   });
 
-        //  const newResponse = await axios({
-        //     method: "post",
-        //     url: newURL,
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     data: productObject
-        //   });
-          
+      //const newResponse = await axios.post(newURL,productObject);
 
-        //const newResponse = await axios.post(newURL,productObject);
+      //console.log(newResponse);
 
-        console.log(newResponse)
+      // const newResponse = await axios.post(newURL, productObject, {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   });
+
+      //console.log(JSON.stringify(newResponse));
+
+      setImageUri(null);
+      alert("Picture saved! 🎉");
+
+       props.navigation.navigate("FullPaintingPic");
 
 
-        // const newResponse = await axios.post(newURL, productObject, {
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //   });
+      
 
-        //console.log(JSON.stringify(newResponse));
-
-        setImageUri(null);
-        //alert("Picture saved! 🎉");
-
-        //return <PaintingPic galleryArray={galleryArray}/>
-
-        //console.log("image saved successfully");
-        //setCurrentScreen("painting");
-      // } catch (error) {
-      //   console.log(error);
-      // }
+      //console.log("image saved successfully");
+      
     }
   };
 
@@ -262,14 +258,7 @@ export default function ArtistPic(props) {
               onPress={() => setImageUri(null)}
               icon="retweet"
             />
-            <Button
-              title="Save"
-              onPress={() => {
-                savePicture();
-                //props.navigation.navigate("PaintingPic");
-              }}
-              icon="check"
-            />
+            <Button title="Save" onPress={savePicture} icon="check" />
           </View>
         ) : (
           <Button title="Capture" onPress={takePicture} icon="camera" />
