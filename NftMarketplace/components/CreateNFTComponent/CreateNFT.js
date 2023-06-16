@@ -8,12 +8,15 @@ import ArtistPaintingPic from "./Camera/ArtistPaintingPic";
 import FullPaintingPic from "./Camera/FullPaintingPic";
 import RightPaintingPic from "./Camera/RightPaintingPic";
 import LeftPaintingPic from "./Camera/LeftPaintingPic";
-import Finished from "./Camera/Finished"
+import Finished from "./Finished"
+import store from "../../src/app/store"
+import { Provider } from "react-redux";
 
 const Stack = createNativeStackNavigator();
 
 export default function CreateNFT() {
   return (
+    <Provider store={store}>
     <NavigationContainer independent={true}>
       <Stack.Navigator
         screenOptions={{
@@ -23,14 +26,16 @@ export default function CreateNFT() {
         }}
       >
         <Stack.Screen name="TextForm" component={TextForm} />
-        {/* <Stack.Screen name="DropDownForm" component={DropDownForm} />
-        <Stack.Screen name="ArtistPaintingPic" component={ArtistPaintingPic} />
+        <Stack.Screen name="DropDownForm" component={DropDownForm} />
+        {/* <Stack.Screen name="ArtistPaintingPic" component={ArtistPaintingPic} /> */}
+        
         <Stack.Screen name="FullPaintingPic" component={FullPaintingPic} />
         <Stack.Screen name="LeftPaintingPic" component={LeftPaintingPic}/>
-        <Stack.Screen name="RightPaintingPic" component={RightPaintingPic}/> */}
+        <Stack.Screen name="RightPaintingPic" component={RightPaintingPic}/>
         <Stack.Screen name="Finished" component={Finished}/>
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }
 

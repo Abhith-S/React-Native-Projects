@@ -15,9 +15,20 @@ import Colors from "../constants/Colors";
 //   import { RootStackParamList } from "../types";
 const { height } = Dimensions.get("window");
 
+import { useSelector } from "react-redux"
+
+
 //   type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
 
 const WelcomeScreen = ({navigation}) => {
+
+  const token = useSelector((state)=>state.loginToken.token)
+
+  console.log("welcome screen token is"+token)
+
+  //use effetct to get if token stored on device
+
+
   return (
     <SafeAreaView>
       <View>

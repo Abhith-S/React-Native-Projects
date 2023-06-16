@@ -1,4 +1,5 @@
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -6,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Spacing from "../constants/Spacing";
 import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
@@ -16,9 +17,61 @@ import { Ionicons } from "@expo/vector-icons";
 // import { RootStackParamList } from "../types";
 import AppTextInput from "../components/AppTextInput";
 
+import axios from "axios";
+
+//const registerUserUrl = "http://139.59.69.142:5000/api/token";
+
 //type Props = NativeStackScreenProps<RootStackParamList, "Register">;
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [token,setToken] = useState("")
+
+  const handleSignUp = () => {
+    if(password != confirmPassword || password == ""){
+      Alert.alert("Alert", "Passwords doesn't match.", [
+          
+          { text: "OK", onPress: () => {console.log("OK Pressed")} },
+        ])
+      }else{
+          const registerUser = async()=>{
+            try{
+              const response = await axios({
+                method: "post",
+                url: registerUserUrl,
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                data: {
+                  email:email,
+                  password:password
+                },
+              });
+
+              console.log(response)
+              setToken(response);
+            }
+            catch(err){
+              console.log(err);
+            }
+
+            console.log("done 1")
+          }
+
+          registerUser()
+
+          console.log("done 2")
+      }
+  };
+
+  //console.log(token)
+
+
   return (
     <SafeAreaView>
       <View
@@ -57,9 +110,18 @@ const RegisterScreen = ({navigation}) => {
             marginTop: Spacing,
           }}
         >
-          <AppTextInput placeholder="Email" />
-          <AppTextInput placeholder="Password" />
-          <AppTextInput placeholder="Confirm Password" />
+          <AppTextInput
+            placeholder="Email"
+            onChangeText={(text) => setEmail(text)}
+          />
+          <AppTextInput
+            placeholder="Password"
+            onChangeText={(text) => setPassword(text)}
+          />
+          <AppTextInput
+            placeholder="Confirm Password"
+            onChangeText={(text) => setConfirmPassword(text)}
+          />
         </View>
 
         <TouchableOpacity
@@ -76,6 +138,7 @@ const RegisterScreen = ({navigation}) => {
             shadowOpacity: 0.3,
             shadowRadius: Spacing,
           }}
+          onPress={handleSignUp}
         >
           <Text
             style={{
@@ -89,7 +152,9 @@ const RegisterScreen = ({navigation}) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {navigation.navigate("Login")}}
+          onPress={() => {
+            navigation.navigate("Login");
+          }}
           style={{
             padding: Spacing,
           }}

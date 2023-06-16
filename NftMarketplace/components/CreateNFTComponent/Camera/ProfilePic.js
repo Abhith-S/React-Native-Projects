@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
-import Constants from "expo-constants";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";

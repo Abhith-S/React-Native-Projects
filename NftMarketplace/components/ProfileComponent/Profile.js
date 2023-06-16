@@ -1,5 +1,9 @@
+//react packages
 import React from 'react';
-import {View, ScrollView, StyleSheet} from 'react-native';
+import {View, ScrollView, StyleSheet,Button} from 'react-native';
+import { useDispatch } from "react-redux";
+
+//external packages
 import {
   Avatar,
   Title,
@@ -7,13 +11,23 @@ import {
   Text,
   TouchableRipple,
 } from 'react-native-paper';
-
 import {MaterialCommunityIcons} from 'react-native-vector-icons';
 import {Ionicons} from 'react-native-vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+//components imports
 import Colors from '../../constants/Colors';
+import { updateLoginToken } from '../../src/features/loginToken/loginTokenSlice';
+
 
 export function Profile(){
+
+  const dispatch = useDispatch();
+
+  const handleLogout = ()=>{
+    dispatch(updateLoginToken({token:""}))
+    AsyncStorage.removeItem("token");
+  }
 
   return (
     <ScrollView style={styles.container} overScrollMode='never' showsVerticalScrollIndicator={false}>
@@ -96,6 +110,7 @@ export function Profile(){
           </View>
         </TouchableRipple>
       </View>
+      <Button onPress={handleLogout} title="Logout" color={Colors.blue} />
     </ScrollView>
   );
 };

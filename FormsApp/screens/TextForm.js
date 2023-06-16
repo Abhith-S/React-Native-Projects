@@ -2,74 +2,60 @@
 import React, { useState } from "react";
 import { Button, TextInput, View, StyleSheet } from "react-native";
 import { Formik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { getData } from "../src/features/textForm/textFormSlice";
 
 export const TextForm = (props) => {
+
+  const [paintingName,setPaintingName] = useState("")
+  const [paintingDescription,setPaintingDescription] = useState("")
+  const [price,setPrice] = useState(0)
+
+  const dispatch = useDispatch()
+  
+  const handleSubmit = ()=>{
+    //console.log(paintingName,paintingDescription,price)
+    dispatch(getData({paintingName,paintingDescription,price}))
+
+    props.navigation.navigate("Finished");
+  }
+
+  //const formValue = useSelector((state)=> state.textForm.value)
+  
+
   return (
     <View style={styles.container}>
-    <Formik
-      initialValues={{ productName: "" }}
-      onSubmit={(values) => console.log(values)}
-    >
-      {({ handleChange, handleSubmit, values }) => (
+    
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.container_input}
-            onChangeText={handleChange("paintingName")}
-            value={values.paintingName}
-            placeholder="Paining Name"
+            onChangeText={(newText)=>setPaintingName(newText)} 
+            placeholder="painting name"
           />
           <TextInput
             style={styles.container_input}
-            onChangeText={handleChange("paintingDescription")}
-            value={values.paintingDescription}
+            onChangeText={(newText)=>setPaintingDescription(newText)} 
             placeholder="Painting Description"
             multiline={true}
           />
-          <TextInput
-            style={styles.container_input}
-            onChangeText={handleChange("artistName")}
-            value={values.artistName}
-            placeholder="Artist Name"
-          />
-          <TextInput
-            style={styles.container_input}
-            onChangeText={handleChange("artistDetails")}
-            value={values.artistDetails}
-            placeholder="Tell us more about the Artist......"
-            multiline={true}
-          />
-          <TextInput
-            style={styles.container_input}
-            onChangeText={handleChange("creationDate")}
-            value={values.creationDate}
-            placeholder="Creation Date "
-          />
+          
 
           <TextInput
             style={styles.container_input}
-            onChangeText={handleChange("price")}
-            value={values.price}
+            onChangeText={(newText)=>setPrice(newText)} 
             placeholder="Price"
             inputMode="numeric"
           />
 
-          <TextInput
-            style={styles.container_input}
-            onChangeText={handleChange("links")}
-            value={values.links}
-            placeholder="Social Media Link"
-            inputMode="url"
-            textContentType="URL"
-          />
+          
           <View style={styles.container_button}>
             <Button
-              onPress={() => props.setTextFormComplete(true)} //handleSubmit
+              onPress={handleSubmit} 
               title="Submit"
             />
           </View>
         </View>
-      )}
-    </Formik>
+     
     </View>
   );
 };

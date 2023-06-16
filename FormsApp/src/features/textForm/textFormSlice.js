@@ -1,0 +1,20 @@
+import { createSlice,current } from '@reduxjs/toolkit'
+
+export const textFormSlice = createSlice({
+    name:"textForm",
+    initialState:{
+       paintingName:"",
+       paintingDescription:"",
+       price:0
+    },
+    reducers:{
+        getData: (state,action)=>{
+            state.paintingName = action.payload.paintingName;
+            state.paintingDescription = action.payload.paintingDescription
+            state.price = action.payload.price
+        }
+    }
+})
+
+export const {getData} = textFormSlice.actions
+export default textFormSlice.reducer

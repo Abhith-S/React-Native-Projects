@@ -5,21 +5,19 @@ import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";
 import * as FaceDetector from "expo-face-detector";
+import { useDispatch } from "react-redux";
 
 import axios from "axios";
+import { updatePaintingArtistPic } from "../../../src/features/pictures/picturesSlice";
 
-const URL = "http://139.59.69.142:5000/api/attachments";
+const imageURL = "http://139.59.69.142:5000/api/attachments";
 
-const newURL = "http://139.59.69.142:5000/api/products";
+const finalURL = "http://139.59.69.142:5000/api/products";
 
 //ssh root@139.59.69.142
 //http://10.10.32.79:5000/api/attachments
 //http://139.59.69.142:5000/api/attachments
 //http://10.10.32.79:5000/api/products
-
-var galleryArray = [];
-var mainImage = {};
-var productObject = {};
 
 export default function ArtistPaintingPic(props) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -31,6 +29,15 @@ export default function ArtistPaintingPic(props) {
   const [faceData, setFaceData] = useState([]);
 
   const [imageData, setImageData] = useState();
+
+  //const [serverResponse, setServerResponse] = useState("fjhs");
+
+  const serverResponse = useRef();
+
+  ///redux
+  const dispatch = useDispatch();
+
+  ///
 
   useEffect(() => {
     (async () => {
@@ -85,99 +92,94 @@ export default function ArtistPaintingPic(props) {
 
   const savePicture = async () => {
     if (imageUri) {
-      //try {
-      // const asset = await MediaLibrary.createAssetAsync(image);
+      //const asset = await MediaLibrary.createAssetAsync(image);
 
-      // const formData = new FormData();
-      // formData.append("attachment", {
-      //   uri: imageUri,
-      //   name: "myimage.jpg",
-      //   fileName: "image",
-      //   type: "image/jpg",
-      // });
+      const formData = new FormData();
+      formData.append("attachment", {
+        uri: imageUri,
+        name: "myimage.jpg",
+        fileName: "image",
+        type: "image/jpg",
+      });
 
-      // const response = await axios({
-      //   method: "post",
-      //   url: URL,
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      //   data: formData,
-      // });
+      try {
+        const response = await axios({
+          method: "post",
+          url: imageURL,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          data: formData,
+        });
+        //console.log(response.data[0]); ///array of object
+
+        //setServerResponse(JSON.stringify(response.data[0]));
+
+        serverResponse.current = JSON.stringify(response.data[0]);
+
+        console.log("server response inside try - " + serverResponse.current);
+         dispatch( updatePaintingArtistPic(serverResponse.current ));
+
+      } catch (error) {
+        console.log(error);
+      }
 
       // console.log(response.data[0].id);
       // console.log(response.data[0].thumbnail);
       // console.log(response.data[0]);
 
-      // galleryArray.push(response.data);
-      //console.log(galleryArray);
-      // mainImage = response.data[0];
-      //console.log(mainImage)
+      //.........WORKINF PRODUCT ADD......begin.....
 
-      // productObject = {
-      //   price: 111,
-      //   name: "rterrgd",
-      //   description: "dfgdgdgeer",
-      //   digital_file: {
-      //     attachment_id: "683",
-      //     original:
-      //       "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
-      //     thumbnail:
-      //       "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
-      //   },
-      //   categories: {
-      //     name: "hyperledger",
-      //   },
-      //   tags: [
-      //     {
-      //       name: "abstract",
-      //     },
-      //     {
-      //       name: "nouveau",
-      //     },
-      //   ],
-      //   shop_id: "1681e7c0-deda-4612-b0f9-6d7c3611f8fb",
-      // };
+      //     productObject = {
+      //       "price": 23,
+      //       "name": "mypic",
+      //       "description": "the best pic",
+      //       "digital_file": "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
+      //       "gallery": "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
+      //       "categories": {
+      //           "name": "traditional"
+      //       },
+      //       "tags": [
+      //           {
+      //               "name": "abstract"
+      //           },
+      //           {
+      //               "name": "other"
+      //           }
+      //       ],
+      //       "subject": [
+      //           {
+      //               "name": "history"
+      //           },
+      //           {
+      //               "name": "other"
+      //           }
+      //       ],
+      //       "medium": "ink",
+      //       "material": "canvas",
+      //       "size": "small",
+      //       "orientation": "portrait",
+      //       "shop_id": "76eccbc2-d807-429b-bd11-b2487244dc1c"
+      //   };
 
-      // //console.log(JSON.stringify(productObject))
-
-      // const newResponse = await fetch(newURL, {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(productObject),
-      // });
-
-      //  const newResponse = await axios({
-      //     method: "post",
-      //     url: newURL,
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     data: productObject
-      //   });
-
-      //const newResponse = await axios.post(newURL,productObject);
-
-      //console.log(newResponse);
-
-      // const newResponse = await axios.post(newURL, productObject, {
+      //   const newResponse = await axios.post(finalURL, productObject, {
       //     headers: {
       //       "Content-Type": "application/json",
       //     },
       //   });
 
-      //console.log(JSON.stringify(newResponse));
+      // console.log(JSON.stringify(newResponse));
 
-      setImageUri(null);
-      alert("Picture saved! 🎉");
-
-       props.navigation.navigate("FullPaintingPic");
-
+      //.........WORKINF PRODUCT ADD......end.....
 
       
+      setImageUri(null);
+      //alert("Picture saved! 🎉");
 
       //console.log("image saved successfully");
-      
+
+
+      props.navigation.navigate("FullPaintingPic");
     }
   };
 
@@ -258,7 +260,11 @@ export default function ArtistPaintingPic(props) {
               onPress={() => setImageUri(null)}
               icon="retweet"
             />
-            <Button title="Save" onPress={savePicture} icon="check" />
+            <Button
+              title="Save"
+              onPress={savePicture}
+              icon="check"
+            />
           </View>
         ) : (
           <Button title="Capture" onPress={takePicture} icon="camera" />

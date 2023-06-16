@@ -1,107 +1,50 @@
 // Formik x React Native example
 import React, { useState, createContext } from "react";
 import { Button, TextInput, View, StyleSheet, Text } from "react-native";
-import { Formik } from "formik";
 import axios from "axios";
-import ArtistPic from "../Camera/ArtistPaintingPic";
-import RightPaintingPic from "../Camera/RightPaintingPic";
-
-
-const URL = "http://10.10.32.79:3000";
-
-//const ValuesContext = createContext();
+import { useDispatch, useSelector } from "react-redux";
+import { updateTextForm } from "../../../src/features/textForm/textFormSlice";
 
 const TextForm = (props) => {
+  const [paintingName, setPaintingName] = useState();
+  const [paintingDescription, setPaintingDescription] = useState();
+  const [price, setPrice] = useState(0);
 
- //const [formValues,setFormValues] = useState(null)
+  const dispatch = useDispatch();
+
+  const handleSubmit = () => {
+    dispatch(updateTextForm({ paintingName, paintingDescription, price }));
+
+    props.navigation.navigate("DropDownForm");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.container_text}>Fill the details below : </Text>
-      <Formik
-        initialValues={{ paintingName: "" }}
-        onSubmit={async(values) =>{
-          //console.log(JSON.stringify(values))
-          //setFormValues(values)
-         
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.container_input}
+          onChangeText={(newText) => setPaintingName(newText)}
+          placeholder="Painting name"
+        />
+        <TextInput
+          style={styles.container_input}
+          onChangeText={(newText) => setPaintingDescription(newText)}
+          placeholder="Painting Description"
           
+        />
 
-        //   try{const response = await axios.post(URL,values);
-        //   console.log(response)}
-        //   catch(err){
-        //     console.log(err);
-        //   }
-         
-          
-        } }
+        <TextInput
+          style={styles.container_input}
+          onChangeText={(newText) => setPrice(newText)}
+          placeholder="Price"
+          inputMode="numeric"
+        />
 
-      
-      >
-        {({ handleChange, handleSubmit, values }) => (
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.container_input}
-              onChangeText={handleChange("paintingName")}
-              value={values.paintingName}
-              placeholder="Painting Name"
-            />
-            <TextInput
-              style={styles.container_input}
-              onChangeText={handleChange("paintingDescription")}
-              value={values.paintingDescription}
-              placeholder="Painting Description"
-              multiline={true}
-            />
-            {/* <TextInput
-            style={styles.container_input}
-            onChangeText={handleChange("artistName")}
-            value={values.artistName}
-            placeholder="Artist Name"
-          />
-          <TextInput
-            style={styles.container_input}
-            onChangeText={handleChange("artistDetails")}
-            value={values.artistDetails}
-            placeholder="Tell us more about the Artist......"
-            multiline={true}
-          />
-          <TextInput
-            style={styles.container_input}
-            onChangeText={handleChange("creationDate")}
-            value={values.creationDate}
-            placeholder="Creation Date "
-          /> */}
-
-            <TextInput
-              style={styles.container_input}
-              onChangeText={handleChange("price")}
-              value={values.price}
-              placeholder="Price"
-              inputMode="numeric"
-              keyboardType="number-pad"
-            />
-
-            {/* <TextInput
-            style={styles.container_input}
-            onChangeText={handleChange("links")}
-            value={values.links}
-            placeholder="Social Media Link"
-            inputMode="url"
-            textContentType="URL"
-          /> */}
-            <View style={styles.container_button}>
-              <Button
-                onPress={()=>{
-                  handleSubmit()
-                  props.navigation.navigate("DropDownForm");
-                }
-                } 
-                title="Submit"
-              />
-            </View>
-          </View>
-        )}
-      </Formik>
-      {/* <ValuesContext.Provider value={{formValues}}><RightPaintingPic/></ValuesContext.Provider> */}
+        <View style={styles.container_button}>
+          <Button onPress={handleSubmit} title="Submit" />
+        </View>
+      </View>
     </View>
   );
 };

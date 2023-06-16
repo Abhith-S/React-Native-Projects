@@ -1,4 +1,6 @@
+//react imports
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -6,19 +8,70 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React,{useState} from "react";
+import { useDispatch } from "react-redux";
+
+//external packages 
+import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+
+//component imports
 import Spacing from "../../constants/Spacing";
 import FontSize from "../../constants/FontSize";
 import Colors from "../../constants/Colors";
-//import Font from "../constants/Font";
-import { Ionicons } from "@expo/vector-icons";
-// import { NativeStackScreenProps } from "@react-navigation/native-stack";
-// import { RootStackParamList } from "../types";
 import AppTextInput from "../AppTextInput";
+import { updateLoginToken } from "../../src/features/loginToken/loginTokenSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-//type Props = NativeStackScreenProps<RootStackParamList, "Login">;
+const registerUserUrl = "http://139.59.69.142:5000/api/token";
 
 const LoginScreen = ({navigation}) => {
+
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
+  const handleSignIn = async () => {
+
+    if(email == "" || password == "" ){
+      Alert.alert("Alert", "Enter a valid email and password.", [
+          
+        { text: "OK"},
+      ])
+    }else{
+    try {
+      const response = await axios({
+        method: "post",
+        url: registerUserUrl,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          email: email,
+          password: password,
+        },
+      });
+
+      console.log(response.data);
+      dispatch(updateLoginToken({token:response.data.token}))
+
+      AsyncStorage.setItem("token",response.data.token)
+      
+    } catch (err) {
+      console.log(err);
+      err && Alert.alert("Alert", "Enter a valid email and password.", [
+          
+        { text: "OK" },
+      ])
+    }
+  }
+
+  };
+
+//console.log(token)
+
+
   return (
     <SafeAreaView>
       <View
@@ -58,8 +111,8 @@ const LoginScreen = ({navigation}) => {
             marginBottom: Spacing*3,
           }}
         >
-          <AppTextInput placeholder="Email" />
-          <AppTextInput placeholder="Password" />
+          <AppTextInput placeholder="Email" onChangeText={(text) => setEmail(text)}/>
+          <AppTextInput placeholder="Password" onChangeText={(text) => setPassword(text)}/>
         </View>
 
         <View>
@@ -76,7 +129,7 @@ const LoginScreen = ({navigation}) => {
         </View>
 
         <TouchableOpacity
-        onPress={() => {navigation.navigate("Dashboard")}}
+        
           style={{
             padding: Spacing * 2,
             backgroundColor: Colors.primary,
@@ -90,6 +143,7 @@ const LoginScreen = ({navigation}) => {
             shadowOpacity: 0.3,
             shadowRadius: Spacing,
           }}
+          onPress={handleSignIn}
         >
           <Text
             style={{

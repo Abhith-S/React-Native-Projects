@@ -1,16 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
-import Constants from "expo-constants";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";
-
+//
+import { updateFullPaintingPic } from "../../../src/features/pictures/picturesSlice";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+//
 export default function FullPaintingPic({navigation}) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
+//
+  const imageURL = "http://139.59.69.142:5000/api/attachments";
+  const [imageUri, setImageUri] = useState(null);
+
+  const serverResponseFull = useRef();
+  const dispatch = useDispatch();
+//
 
 
   useEffect(() => {
@@ -31,8 +41,9 @@ export default function FullPaintingPic({navigation}) {
         const data = await cameraRef.current.takePictureAsync({
           skipProcessing: true,
         });
-        console.log(data);
+        //console.log(data);
         setImage(data.uri);
+        setImageUri(data.uri);
       } catch (error) {
         console.log(error);
       }
@@ -40,15 +51,45 @@ export default function FullPaintingPic({navigation}) {
   };
 
   const savePicture = async () => {
-    if (image) {
+    if (imageUri) {
+      //const asset = await MediaLibrary.createAssetAsync(image);
+
+      const formData = new FormData();
+      formData.append("attachment", {
+        uri: imageUri,
+        name: "myimage.jpg",
+        fileName: "image",
+        type: "image/jpg",
+      });
+
       try {
-        const asset = await MediaLibrary.createAssetAsync(image);
-        alert("Picture saved! 🎉");
-        setImage(null);
-        navigation.navigate("LeftPaintingPic")
+        const response = await axios({
+          method: "post",
+          url: imageURL,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          data: formData,
+        });
+        //console.log(response.data[0]); ///array of object
+
+        //setServerResponse(JSON.stringify(response.data[0]));
+
+        serverResponseFull.current = JSON.stringify(response.data[0]);
+
+        console.log("server response inside try FULL - " + serverResponseFull.current);
+         dispatch( updateFullPaintingPic(serverResponseFull.current ));
+
+        
+
       } catch (error) {
         console.log(error);
       }
+      setImageUri(null);
+      //alert("Picture saved! 🎉");
+
+      //console.log("image saved successfully");
+      navigation.navigate("LeftPaintingPic");
     }
   };
 
@@ -176,7 +217,7 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    top: 200,
+    // top: 200,
    
   },
   cameraText: {

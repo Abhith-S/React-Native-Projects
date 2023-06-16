@@ -3,18 +3,28 @@ import { Text, View, StyleSheet, Image } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";
-//import { ValuesContext } from "../Form/TextForm";
+//
+import { updateRightPaintingPic } from "../../../src/features/pictures/picturesSlice";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+//
 
 
-export default function RightPaintingPic({props}) {
+
+export default function RightPaintingPic({navigation}) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
 
-//   const formValues = useContext(ValuesContext);
-// console.log("form values are: ",formValues)
+  //
+  const imageURL = "http://139.59.69.142:5000/api/attachments";
+  const [imageUri, setImageUri] = useState(null);
+
+  const serverResponseRight = useRef();
+  const dispatch = useDispatch();
+//
 
   useEffect(() => {
     (async () => {
@@ -34,9 +44,10 @@ export default function RightPaintingPic({props}) {
         const data = await cameraRef.current.takePictureAsync({
           skipProcessing: true,
         });
-        console.log(data);
+        //console.log(data);
         
         setImage(data.uri);
+        setImageUri(data.uri);
 
         // console.log(values)
       } catch (error) {
@@ -46,15 +57,45 @@ export default function RightPaintingPic({props}) {
   };
 
   const savePicture = async () => {
-    if (image) {
+    if (imageUri) {
+      //const asset = await MediaLibrary.createAssetAsync(image);
+
+      const formData = new FormData();
+      formData.append("attachment", {
+        uri: imageUri,
+        name: "rightImage.jpg",
+        fileName: "rightImage",
+        type: "image/jpg",
+      });
+
       try {
-        const asset = await MediaLibrary.createAssetAsync(image);
-        alert("Picture saved! 🎉");
-        setImage(null);
-        props.navigation.navigate("Finished")
+        const response = await axios({
+          method: "post",
+          url: imageURL,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          data: formData,
+        });
+        //console.log(response.data[0]); ///array of object
+
+        //setServerResponse(JSON.stringify(response.data[0]));
+
+        serverResponseRight.current = JSON.stringify(response.data[0]);
+
+        console.log("server response inside try RIGHT- " + serverResponseRight.current);
+        dispatch( updateRightPaintingPic(serverResponseRight.current));
+
+        
+
       } catch (error) {
         console.log(error);
       }
+      setImageUri(null);
+      //alert("Picture saved! 🎉");
+
+      //console.log("image saved successfully");
+      navigation.navigate("Finished");
     }
   };
 
@@ -182,7 +223,7 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    top: 200,
+    //top: 200,
    
   },
   cameraText: {

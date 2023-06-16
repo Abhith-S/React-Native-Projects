@@ -1,35 +1,109 @@
+//react packages
 import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
+import { Provider, useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
-import { Header } from "./components/ComponentsExport";
-import Dashboard from "./components/Dashboard";
-import WelcomeScreen from "./components/LoginComponent/WelcomeScreen";
-import LoginScreen from "./components/LoginComponent/LoginScreen";
-import RegisterScreen from "./components/LoginComponent/RegisterScreen";
+//external packages
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SplashScreen from "expo-splash-screen";
+
+//components imports
+import {
+  WelcomeScreen,
+  LoginScreen,
+  RegisterScreen,
+} from "./components/ComponentsExport";
+import Dashboard from "./components/Dashboard";
+import store from "./src/app/store";
+import { updateLoginToken } from "./src/features/loginToken/loginTokenSlice";
 
 const Stack = createNativeStackNavigator();
 
-const screenHeight = Dimensions.get("screen").height;
+const AuthenticationScreens = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Welcome"
+        component={WelcomeScreen}
+        options={{
+          headerShown: false,
+          contentStyle: { backgroundColor: "white" },
+        }}
+        style={styles.container}
+      />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerTitle: "", headerTransparent: true }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerTitle: "", headerTransparent: true }}
+      />
+    </Stack.Navigator>
+  );
+};
 
-const setHeight = (height) => (screenHeight / 100) * height;
+const AuthenticatedScreens = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{ headerTitle: "", headerTransparent: true }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const Navigation = () => {
+  const token = useSelector((state) => state.loginToken.token);
+
+  return (
+    <NavigationContainer>
+      {token ? <AuthenticatedScreens /> : <AuthenticationScreens />}
+    </NavigationContainer>
+  );
+};
+
+function Root() {
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
+
+  const dispatch = useDispatch();
+
+  //const token = useSelector((state)=>state.loginToken.token)
+
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+
+    async function fetchToken() {
+      const storedToken = await AsyncStorage.getItem("token");
+
+      if (storedToken) {
+        dispatch(updateLoginToken({ token: storedToken }));
+      }
+
+      setIsTryingLogin(false);
+    }
+
+    fetchToken();
+  }, []);
+
+  if (!isTryingLogin) {
+    SplashScreen.hideAsync();
+
+    return <Navigation />;
+  }
+}
 
 export default function App() {
   return (
-    <NavigationContainer >
-      <Stack.Navigator>
-        {/* <Stack.Screen
-          name="Welcome"
-          component={WelcomeScreen}
-          options={{ headerShown: false ,contentStyle:{backgroundColor: "white",} }}
-          style={styles.container}
-        />
-        <Stack.Screen name="Login" component={LoginScreen} options={{headerTitle:"" ,headerTransparent:true}}/>
-        <Stack.Screen name="Register" component={RegisterScreen} options={{headerTitle:"" ,headerTransparent:true}}/> */}
-        <Stack.Screen name="Dashboard" component={Dashboard} options={{headerTitle:"" ,headerTransparent:true}}/>
-
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <Root />
+    </Provider>
   );
 }
 

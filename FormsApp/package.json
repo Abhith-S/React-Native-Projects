@@ -10,13 +10,17 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
+    "@react-navigation/native": "^6.1.6",
+    "@react-navigation/native-stack": "^6.9.12",
+    "@reduxjs/toolkit": "^1.9.5",
     "expo": "~48.0.15",
     "expo-status-bar": "~1.4.4",
     "formik": "^2.2.9",
     "react": "18.2.0",
     "react-native": "0.71.7",
     "react-native-datepicker": "^1.7.2",
-    "react-native-dropdown-select-list": "^2.0.4"
+    "react-native-dropdown-select-list": "^2.0.4",
+    "react-redux": "^8.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

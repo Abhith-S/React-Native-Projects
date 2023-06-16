@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React,{useState} from "react";
 import Spacing from "../constants/Spacing";
 import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
@@ -18,7 +18,54 @@ import AppTextInput from "../components/AppTextInput";
 
 //type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
-const LoginScreen = ({navigation}) => {
+import axios from "axios";
+
+import { useDispatch } from "react-redux";
+import { updateLoginToken } from "../src/features/loginToken/loginTokenSlice";
+
+const registerUserUrl = "http://139.59.69.142:5000/api/token";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const LoginScreen = ({ navigation }) => {
+ 
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
+  const [token, setToken] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleSignIn = async () => {
+    try {
+      const response = await axios({
+        method: "post",
+        url: registerUserUrl,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          email: email,
+          password: password,
+        },
+      });
+
+      console.log(response.data);
+      console.log(String(response.data.token))
+      //setToken(response.data.token);
+      dispatch(updateLoginToken({token:response.data.token}))
+
+      AsyncStorage.setItem("token",response.data.token)
+      
+    } catch (err) {
+      console.log(err);
+    }
+
+  };
+
+//console.log(token)
+
   return (
     <SafeAreaView>
       <View
@@ -35,7 +82,7 @@ const LoginScreen = ({navigation}) => {
             style={{
               fontSize: FontSize.xLarge,
               color: Colors.primary,
-            //fontFamily: Font["poppins-bold"],
+              //fontFamily: Font["poppins-bold"],
               marginTop: Spacing * 3,
             }}
           >
@@ -54,12 +101,18 @@ const LoginScreen = ({navigation}) => {
         </View>
         <View
           style={{
-            marginTop: Spacing*2,
-            marginBottom: Spacing*3,
+            marginTop: Spacing * 2,
+            marginBottom: Spacing * 3,
           }}
         >
-          <AppTextInput placeholder="Email" />
-          <AppTextInput placeholder="Password" />
+          <AppTextInput
+            placeholder="Email"
+            onChangeText={(text) => setEmail(text)}
+          />
+          <AppTextInput
+            placeholder="Password"
+            onChangeText={(text) => setPassword(text)}
+          />
         </View>
 
         <View>
@@ -89,6 +142,7 @@ const LoginScreen = ({navigation}) => {
             shadowOpacity: 0.3,
             shadowRadius: Spacing,
           }}
+          onPress={handleSignIn}
         >
           <Text
             style={{
@@ -102,7 +156,9 @@ const LoginScreen = ({navigation}) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {navigation.navigate("Register")}}
+          onPress={() => {
+            navigation.navigate("Register");
+          }}
           style={{
             padding: Spacing,
           }}

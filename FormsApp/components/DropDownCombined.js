@@ -12,8 +12,10 @@ import {
   SelectList,
 } from "react-native-dropdown-select-list";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { updateDropDownForm } from "../src/features/dropDownForm/dropDownFormSlice";
 
-export default DropDownCombined = () => {
+export default DropDownCombined = ({ navigation }) => {
   const [selectedSubject, setSelectedSubject] = useState([]);
   const subjectData = [
     { key: "1", value: "Abstract" },
@@ -28,7 +30,7 @@ export default DropDownCombined = () => {
     { key: "10", value: "Culture" },
     { key: "11", value: "Classical" },
     { key: "12", value: "Family" },
-    {key:"13",value:"Health & Beauty"},
+    { key: "13", value: "Health & Beauty" },
   ];
 
   const [selectedStyle, setSelectedStyle] = useState([]);
@@ -127,11 +129,13 @@ export default DropDownCombined = () => {
     { key: "11", value: "Golden" },
     { key: "12", value: "Silver" },
     { key: "13", value: "Aquamarine" },
-    {key:"14",value:"Dark Slate Blue"}
+    { key: "14", value: "Dark Slate Blue" },
   ];
 
+  dispatch = useDispatch();
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} overScrollMode="never">
       <View style={styles.container_box}>
         <Text>Subject</Text>
         <MultipleSelectList
@@ -230,13 +234,34 @@ export default DropDownCombined = () => {
             "You have selected : ",
             `Subject: ${selectedSubject}\n\nStyle: ${selectedStyle}\n\nMedium: ${selectedMedium}\n\nMaterial: ${selectedMaterial}\n\nQuality: ${selectedQuality}\n\nOriginal: ${selectedOriginal}\n\nSize: ${selectedSize}\n\nOrientation: ${selectedOrientation}\n\nColor: ${selectedColors}`,
             [
-                {
-                  text: 'Cancel',
-                  onPress: () => console.log('Cancel Pressed'),
-                  style: 'cancel',
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              {
+                text: "OK",
+                onPress: () => {
+                  console.log("OK Pressed");
+                  dispatch(
+                    updateDropDownForm({
+                      subject: selectedSubject,
+                      style: selectedStyle,
+                      medium: selectedMedium,
+                      material: selectedMaterial,
+                      quality: selectedQuality,
+                      original: selectedOriginal,
+                      size: selectedSize,
+                      colors: selectedColors,
+                      orientation: selectedOrientation,
+                    })
+                  );
+
+                  navigation.navigate("Finished");
+                  console.log(selectedSubject);
                 },
-                {text: 'OK', onPress: () => console.log('OK Pressed')},
-              ]
+              },
+            ]
           )
         }
       >
@@ -246,7 +271,7 @@ export default DropDownCombined = () => {
           Submit
         </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -265,7 +290,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     backgroundColor: "#F5F5F5",
   },
-  container_box:{
+  container_box: {
     padding: 5,
     flexDirection: "row",
     backgroundColor: "white",
@@ -275,6 +300,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     margin: 20,
     flexWrap: "wrap",
-
-  }
+  },
 });

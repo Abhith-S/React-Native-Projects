@@ -13,96 +13,80 @@ import {
 } from "react-native-dropdown-select-list";
 import { Ionicons } from "@expo/vector-icons";
 import ArtistPic from "../Camera/ArtistPaintingPic";
+import { useDispatch } from "react-redux";
+import { updateDropDownForm } from "../../../src/features/dropDownForm/dropDownFormSlice";
+
+
 
 export default DropDownForm = ({navigation}) => {
-  const [selectedSubject, setSelectedSubject] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState("");
   const subjectData = [
-    { key: "1", value: "Pop Culture" },
-    { key: "2", value: "Travel" },
-    { key: "3", value: "Geometric" },
-    { key: "4", value: "People" },
-    { key: "5", value: "Animal" },
-    { key: "6", value: "Nature" },
-    { key: "7", value: "Life" },
-    { key: "8", value: "Seascape" },
-    { key: "9", value: "Architecture" },
-    { key: "10", value: "Culture" },
-    { key: "11", value: "Classical" },
-    { key: "12", value: "Family" },
-    {key:"13",value:"Health & Beauty"},
+    { key: "1", value: "pop culture" },
+    { key: "2", value: "history" },
+    { key: "3", value: "LGBTQ" },
+    { key: "4", value: "life" },
+    { key: "5", value: "nature" },
+    {key:"6",value:"other"},
   ];
 
-  const [selectedStyle, setSelectedStyle] = useState([]);
+  const [selectedStyle, setSelectedStyle] = useState("");
   const styleData = [
     { key: "1", value: "abstract" },
     { key: "2", value: "impressionism" },
     { key: "3", value: "nouveau" },
     { key: "4", value: "realism" },
-    { key: "6", value: "Fine Art" },
-    { key: "7", value: "Expressionism" },
-    { key: "8", value: "Conceptual" },
-    { key: "9", value: "Minimalism" },
-    { key: "10", value: "Portraiture" },
-    { key: "11", value: "Illustration" },
-    { key: "12", value: "Surrealism" },
+    { key: "5", value: "fine art" },
+    { key: "6", value: "other" },
+    
   ];
 
   const [selectedMedium, setSelectedMedium] = useState("");
   const mediumData = [
-    { key: "1", value: "Acrylic" },
-    { key: "2", value: "Oil" },
-    { key: "3", value: "Watercolor" },
-    { key: "4", value: "Ink" },
-    { key: "5", value: "Spray Paint" },
-    { key: "6", value: "Digital" },
-    { key: "7", value: "Graphite" },
-    { key: "9", value: "Enamel" },
-    { key: "10", value: "Paint" },
-    { key: "11", value: "Pencil" },
-    { key: "13", value: "Ballpoin Pen" },
-  
+    { key: "1", value: "acrylic" },
+    { key: "2", value: "oil" },
+    { key: "3", value: "watercolor" },
+    { key: "4", value: "ink" },
+    { key: "5", value: "pencil" },
+    { key: "6", value: "other" },
+    
   ];
 
   const [selectedMaterial, setSelectedMaterial] = useState("");
   const materialData = [
-    { key: "1", value: "Canvas" },
-    { key: "2", value: "Paper" },
-    { key: "3", value: "Wood" },
-    { key: "4", value: "Cardboard" },
-    { key: "5", value: "Plastic" },
-    { key: "6", value: "Soft (Yarn, Cotton, Fabric)" },
-    { key: "7", value: "Aluminium" },
-    { key: "8", value: "Glass" },
-    { key: "9", value: "Carbon Fibre" },
-    { key: "10", value: "Canvas Board" },
-    { key: "11", value: "Mixed Media" },
+    { key: "1", value: "canvas" },
+    { key: "2", value: "paper" },
+    { key: "3", value: "wood" },
+    { key: "4", value: "soft" },
+    { key: "5", value: "glass" },
+    { key: "6", value: "other" },
+    
     
   ];
 
-  const [selectedQuality, setSelectedQuality] = useState("");
-  const qualityData = [
-    { key: "1", value: "Museum quality" },
-    { key: "2", value: "Masterpiece" },
-    { key: "3", value: "Fine" },
-    { key: "4", value: "Elite" },
-    { key: "4", value: "Iconic" },
-  ];
+  // const [selectedQuality, setSelectedQuality] = useState("");
+  // const qualityData = [
+  //   { key: "1", value: "Museum quality" },
+  //   { key: "2", value: "Masterpiece" },
+  //   { key: "3", value: "Fine" },
+  //   { key: "4", value: "Elite" },
+  //   { key: "4", value: "Iconic" },
+  // ];
 
-  const [selectedOriginal, setSelectedOriginal] = useState("");
-  const originalData = [
-    { key: "1", value: "One of a Kind" },
-    { key: "2", value: "Limited Edition" },
-    { key: "3", value: "One and Only" },
-    { key: "4", value: "Rare" },
-    { key: "4", value: "Common" },
-  ];
+  // const [selectedOriginal, setSelectedOriginal] = useState("");
+  // const originalData = [
+  //   { key: "1", value: "One of a Kind" },
+  //   { key: "2", value: "Limited Edition" },
+  //   { key: "3", value: "One and Only" },
+  //   { key: "4", value: "Rare" },
+  //   { key: "4", value: "Common" },
+  // ];
 
   const [selectedSize, setSelectedSize] = useState("");
   const sizeData = [
-    { key: "1", value: "Small" },
-    { key: "2", value: "Medium" },
-    { key: "3", value: "Large" },
-    { key: "4", value: "Oversized" },
+    { key: "1", value: "small" },
+    { key: "2", value: "medium" },
+    { key: "3", value: "large" },
+    { key: "4", value: "oversized" },
   ];
 
   const [selectedOrientation, setSelectedOrientation] = useState("");
@@ -112,22 +96,22 @@ export default DropDownForm = ({navigation}) => {
     { key: "3", value: "square" },
   ];
 
-  const [selectedColors, setSelectedColors] = useState([]);
-  const colorData = [
-    { key: "1", value: "Red" },
-    { key: "2", value: "Blue" },
-    { key: "3", value: "Green" },
-    { key: "4", value: "Black" },
-    { key: "5", value: "Orange" },
-    { key: "6", value: "White" },
-    { key: "7", value: "Grey" },
-    { key: "8", value: "Violet" },
-    { key: "9", value: "Yellow" },
-    { key: "10", value: "Brown" },
-    { key: "11", value: "Golden" },
-    { key: "12", value: "Silver" },
-    {key:"14",value:"Dark Slate Blue"}
-  ];
+  // const [selectedColors, setSelectedColors] = useState([]);
+  // const colorData = [
+  //   { key: "1", value: "Red" },
+  //   { key: "2", value: "Blue" },
+  //   { key: "3", value: "Green" },
+  //   { key: "4", value: "Black" },
+  //   { key: "5", value: "Orange" },
+  //   { key: "6", value: "White" },
+  //   { key: "7", value: "Grey" },
+  //   { key: "8", value: "Violet" },
+  //   { key: "9", value: "Yellow" },
+  //   { key: "10", value: "Brown" },
+  //   { key: "11", value: "Golden" },
+  //   { key: "12", value: "Silver" },
+  //   {key:"14",value:"Dark Slate Blue"}
+  // ];
 
   //data to server
 
@@ -137,7 +121,7 @@ export default DropDownForm = ({navigation}) => {
   // var categories = {}
   // var tags = []
 
-
+  const dispatch = useDispatch();
   
   return (
     <ScrollView style={styles.container} overScrollMode="never">
@@ -183,7 +167,7 @@ export default DropDownForm = ({navigation}) => {
         />
       </View>
 
-      <View style={styles.container_box}>
+      {/* <View style={styles.container_box}>
         <Text>Quality</Text>
         <SelectList
           setSelected={setSelectedQuality}
@@ -191,9 +175,9 @@ export default DropDownForm = ({navigation}) => {
           save="value"
           search={false}
         />
-      </View>
+      </View> */}
 
-      <View style={styles.container_box}>
+      {/* <View style={styles.container_box}>
         <Text>Original</Text>
         <SelectList
           setSelected={setSelectedOriginal}
@@ -201,7 +185,7 @@ export default DropDownForm = ({navigation}) => {
           save="value"
           search={false}
         />
-      </View>
+      </View> */}
 
       <View style={styles.container_box}>
         <Text>Size</Text>
@@ -213,7 +197,7 @@ export default DropDownForm = ({navigation}) => {
         />
       </View>
 
-      <View style={styles.container_box}>
+      {/* <View style={styles.container_box}>
         <Text>Colors</Text>
         <MultipleSelectList
           setSelected={setSelectedColors}
@@ -222,7 +206,7 @@ export default DropDownForm = ({navigation}) => {
           label=""
           closeicon={<Ionicons name="checkmark" size={30} />}
         />
-      </View>
+      </View> */}
 
       <View style={styles.container_box}>
         <Text>Orientation</Text>
@@ -246,14 +230,27 @@ export default DropDownForm = ({navigation}) => {
           //console.log(categories)
           Alert.alert(
             "You have selected : ",
-            `Subject: ${selectedSubject}\n\nStyle: ${selectedStyle}\n\nMedium: ${selectedMedium}\n\nMaterial: ${selectedMaterial}\n\nQuality: ${selectedQuality}\n\nOriginal: ${selectedOriginal}\n\nSize: ${selectedSize}\n\nOrientation: ${selectedOrientation}\n\nColor: ${selectedColors}`,
+            `Subject: ${selectedSubject}\n\nStyle: ${selectedStyle}\n\nMedium: ${selectedMedium}\n\nMaterial: ${selectedMaterial}\n\nSize: ${selectedSize}\n\nOrientation: ${selectedOrientation}`,
             [
                 {
                   text: 'Cancel',
                   onPress: () => console.log('Cancel Pressed'),
                   style: 'cancel',
                 },
-                {text: 'OK', onPress: () => navigation.navigate("ArtistPaintingPic")
+                {text: 'OK', onPress: () => {
+                  
+                  dispatch(
+                    updateDropDownForm({
+                      subject: selectedSubject,
+                      style: selectedStyle,
+                      medium: selectedMedium,
+                      material: selectedMaterial,
+                      size: selectedSize,
+                      orientation: selectedOrientation,
+                    })
+                  );
+                  
+                  navigation.navigate("FullPaintingPic")}
                 },
               ]
           )

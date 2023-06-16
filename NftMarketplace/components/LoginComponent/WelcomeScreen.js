@@ -1,3 +1,4 @@
+//react imports
 import {
   Dimensions,
   ImageBackground,
@@ -11,13 +12,10 @@ import React from "react";
 import Spacing from "../../constants/Spacing";
 import FontSize from "../../constants/FontSize";
 import Colors from "../../constants/Colors";
-//   import { NativeStackScreenProps } from "@react-navigation/native-stack";
-//   import { RootStackParamList } from "../types";
 const { height } = Dimensions.get("window");
 
-//   type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
-
 const WelcomeScreen = ({navigation}) => {
+
   return (
     <SafeAreaView>
       <View>

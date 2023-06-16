@@ -3,6 +3,11 @@ import { Text, View, StyleSheet, Image } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "./Button";
+//
+import { updateLeftPaintingPic } from "../../../src/features/pictures/picturesSlice";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+//
 
 export default function LeftPaintingPic({navigation}) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -11,6 +16,13 @@ export default function LeftPaintingPic({navigation}) {
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
 
+  //
+  const imageURL = "http://139.59.69.142:5000/api/attachments";
+  const [imageUri, setImageUri] = useState(null);
+
+  const serverResponseLeft = useRef();
+  const dispatch = useDispatch();
+//
 
   useEffect(() => {
     (async () => {
@@ -30,8 +42,9 @@ export default function LeftPaintingPic({navigation}) {
         const data = await cameraRef.current.takePictureAsync({
           skipProcessing: true,
         });
-        console.log(data);
+       // console.log(data);
         setImage(data.uri);
+        setImageUri(data.uri);
       } catch (error) {
         console.log(error);
       }
@@ -39,15 +52,45 @@ export default function LeftPaintingPic({navigation}) {
   };
 
   const savePicture = async () => {
-    if (image) {
+    if (imageUri) {
+      //const asset = await MediaLibrary.createAssetAsync(image);
+
+      const formData = new FormData();
+      formData.append("attachment", {
+        uri: imageUri,
+        name: "leftImage.jpg",
+        fileName: "leftImage",
+        type: "image/jpg",
+      });
+
       try {
-        const asset = await MediaLibrary.createAssetAsync(image);
-        alert("Picture saved! 🎉");
-        setImage(null);
-        navigation.navigate("RightPaintingPic")
+        const response = await axios({
+          method: "post",
+          url: imageURL,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          data: formData,
+        });
+        //console.log(response.data[0]); ///array of object
+
+        //setServerResponse(JSON.stringify(response.data[0]));
+
+        serverResponseLeft.current = JSON.stringify(response.data[0]);
+
+        console.log("server response inside try LEFT- " + serverResponseLeft.current);
+         dispatch( updateLeftPaintingPic(serverResponseLeft.current ));
+
+        
+
       } catch (error) {
         console.log(error);
       }
+      setImageUri(null);
+      //alert("Picture saved! 🎉");
+
+      //console.log("image saved successfully");
+      navigation.navigate("RightPaintingPic");
     }
   };
 
@@ -175,7 +218,7 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    top: 200,
+    //top: 200,
    
   },
   cameraText: {
