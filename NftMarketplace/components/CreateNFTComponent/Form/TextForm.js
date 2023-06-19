@@ -15,7 +15,7 @@ const TextForm = (props) => {
   const handleSubmit = () => {
     dispatch(updateTextForm({ paintingName, paintingDescription, price }));
 
-    props.navigation.navigate("DropDownForm");
+    props.navigation.replace("DropDownForm");
   };
 
   return (
@@ -25,7 +25,7 @@ const TextForm = (props) => {
         <TextInput
           style={styles.container_input}
           onChangeText={(newText) => setPaintingName(newText)}
-          placeholder="Painting name"
+          placeholder="Painting Name"
         />
         <TextInput
           style={styles.container_input}

@@ -1,14 +1,18 @@
-import { Home, Explore, Cart, Profile, CreateNFT,Header } from "./ComponentsExport";
+//react imports
+import {View,StyleSheet}  from "react-native"
+
+//external packages
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-
-const Tab = createBottomTabNavigator();
-
 import EntypoIcons from "react-native-vector-icons/Entypo";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {View,StyleSheet}  from "react-native"
 MaterialCommunityIcons;
+
+//components imports
+import { Home, Explore, Cart, Profile, CreateNFT,Header } from "./ComponentsExport";
+
+const Tab = createBottomTabNavigator();
 
 export default Dashboard = () => {
   return (
@@ -20,7 +24,7 @@ export default Dashboard = () => {
           headerShown: false,
         }}
       >
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Home"
           component={Home}
           options={{
@@ -35,7 +39,7 @@ export default Dashboard = () => {
             tabBarLabel: "Explore",
             tabBarIcon: () => <MaterialIcons name="explore" size={23} />,
           }}
-        />
+        /> */}
         <Tab.Screen
           name="CreateNFT"
           component={CreateNFT}

@@ -250,7 +250,7 @@ export default DropDownForm = ({navigation}) => {
                     })
                   );
                   
-                  navigation.navigate("FullPaintingPic")}
+                  navigation.replace("ArtistPaintingPic")}
                 },
               ]
           )

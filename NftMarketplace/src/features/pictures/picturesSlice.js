@@ -1,4 +1,5 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+//slice for stroing the server response after sending the pictures
+import { createSlice } from "@reduxjs/toolkit";
 
 export const picturesSlice = createSlice({
   name: "pictures",

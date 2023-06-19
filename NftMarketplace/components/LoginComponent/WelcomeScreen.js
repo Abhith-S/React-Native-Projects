@@ -9,9 +9,12 @@ import {
   View,
 } from "react-native";
 import React from "react";
+
+//component imports
 import Spacing from "../../constants/Spacing";
 import FontSize from "../../constants/FontSize";
 import Colors from "../../constants/Colors";
+
 const { height } = Dimensions.get("window");
 
 const WelcomeScreen = ({navigation}) => {

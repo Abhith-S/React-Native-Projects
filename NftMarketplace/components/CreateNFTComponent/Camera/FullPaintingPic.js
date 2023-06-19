@@ -1,31 +1,42 @@
+//react imports
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
+
+//external packages
 import { Camera, CameraType } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
-import Button from "./Button";
-//
-import { updateFullPaintingPic } from "../../../src/features/pictures/picturesSlice";
 import axios from "axios";
+
+//components imports
+import Button from "./Button";
+
+//redux
+import { updateFullPaintingPic } from "../../../src/features/pictures/picturesSlice";
 import { useDispatch } from "react-redux";
-//
+import { updateFullPaintingImage } from "../../../src/features/imagesUri/imagesUriSlice";
+
+//api to send image to server
+const imageURL = "http://139.59.69.142:5000/api/attachments";
+
 export default function FullPaintingPic({navigation}) {
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [image, setImage] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
-  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const cameraRef = useRef(null);
-//
-  const imageURL = "http://139.59.69.142:5000/api/attachments";
+
   const [imageUri, setImageUri] = useState(null);
 
-  const serverResponseFull = useRef();
+  //set front or back cam
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);   
+
+  //server respomse after sending image 
+  const serverResponseFullPic = useRef();
+  const cameraRef = useRef(null);
+
+  //redux
   const dispatch = useDispatch();
-//
 
 
+  //get camera permissions
   useEffect(() => {
     (async () => {
-      MediaLibrary.requestPermissionsAsync();
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(cameraStatus.status === "granted");
     })();
@@ -41,9 +52,8 @@ export default function FullPaintingPic({navigation}) {
         const data = await cameraRef.current.takePictureAsync({
           skipProcessing: true,
         });
-        //console.log(data);
-        setImage(data.uri);
         setImageUri(data.uri);
+        
       } catch (error) {
         console.log(error);
       }
@@ -52,13 +62,12 @@ export default function FullPaintingPic({navigation}) {
 
   const savePicture = async () => {
     if (imageUri) {
-      //const asset = await MediaLibrary.createAssetAsync(image);
-
+      
       const formData = new FormData();
       formData.append("attachment", {
         uri: imageUri,
-        name: "myimage.jpg",
-        fileName: "image",
+        name: "fullImage.jpg",
+        fileName: "fullImage",
         type: "image/jpg",
       });
 
@@ -71,17 +80,14 @@ export default function FullPaintingPic({navigation}) {
           },
           data: formData,
         });
-        //console.log(response.data[0]); ///array of object
 
-        //setServerResponse(JSON.stringify(response.data[0]));
+        serverResponseFullPic.current = JSON.stringify(response.data[0]);
 
-        serverResponseFull.current = JSON.stringify(response.data[0]);
-
-        console.log("server response inside try FULL - " + serverResponseFull.current);
-         dispatch( updateFullPaintingPic(serverResponseFull.current ));
+        console.log("server response inside try FULL - " + serverResponseFullPic.current);
+         dispatch( updateFullPaintingPic(serverResponseFullPic.current ));
+         dispatch( updateFullPaintingImage(imageUri))
 
         
-
       } catch (error) {
         console.log(error);
       }
@@ -89,13 +95,13 @@ export default function FullPaintingPic({navigation}) {
       //alert("Picture saved! 🎉");
 
       //console.log("image saved successfully");
-      navigation.navigate("LeftPaintingPic");
+      navigation.replace("LeftPaintingPic");
     }
   };
 
   return (
     <View style={styles.container}>
-      {!image ? (
+      {!imageUri ? (
         <Camera
           style={styles.camera}
           type={type}
@@ -147,11 +153,11 @@ export default function FullPaintingPic({navigation}) {
           </View>
         </Camera>
       ) : (
-        <Image source={{ uri: image }} style={styles.camera} />
+        <Image source={{ uri: imageUri }} style={styles.camera} />
       )}
 
       <View style={styles.controls}>
-        {image ? (
+        {imageUri ? (
           <View
             style={{
               flexDirection: "row",
@@ -161,7 +167,7 @@ export default function FullPaintingPic({navigation}) {
           >
             <Button
               title="Re-take"
-              onPress={() => setImage(null)}
+              onPress={() => setImageUri(null)}
               icon="retweet"
             />
             <Button title="Save" onPress={savePicture} icon="check" />

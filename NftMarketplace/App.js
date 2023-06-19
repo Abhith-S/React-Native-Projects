@@ -60,6 +60,7 @@ const AuthenticatedScreens = () => {
 };
 
 const Navigation = () => {
+
   const token = useSelector((state) => state.loginToken.token);
 
   return (
@@ -70,22 +71,20 @@ const Navigation = () => {
 };
 
 function Root() {
-  const [isTryingLogin, setIsTryingLogin] = useState(true);
 
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
   const dispatch = useDispatch();
 
-  //const token = useSelector((state)=>state.loginToken.token)
 
   useEffect(() => {
+
     SplashScreen.preventAutoHideAsync();
 
-    async function fetchToken() {
+    async function fetchToken() {      
       const storedToken = await AsyncStorage.getItem("token");
-
       if (storedToken) {
         dispatch(updateLoginToken({ token: storedToken }));
       }
-
       setIsTryingLogin(false);
     }
 
@@ -94,7 +93,6 @@ function Root() {
 
   if (!isTryingLogin) {
     SplashScreen.hideAsync();
-
     return <Navigation />;
   }
 }

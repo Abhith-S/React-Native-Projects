@@ -1,47 +1,44 @@
+//react imports
 import React, { useState, useEffect, useRef } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
-//import Constants from "expo-constants";
+import { Text, View, StyleSheet, Image } from "react-native";
+
+//external packages
 import { Camera, CameraType } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
-import Button from "./Button";
 import * as FaceDetector from "expo-face-detector";
+import axios from "axios";
+
+//components imports
+import Button from "./Button";
+
+//redux
+import { updatePaintingArtistPic } from "../../../src/features/pictures/picturesSlice";
+import { updatePaintingArtistImage } from "../../../src/features/imagesUri/imagesUriSlice";
 import { useDispatch } from "react-redux";
 
-import axios from "axios";
-import { updatePaintingArtistPic } from "../../../src/features/pictures/picturesSlice";
-
+//api to send image to server
 const imageURL = "http://139.59.69.142:5000/api/attachments";
 
-const finalURL = "http://139.59.69.142:5000/api/products";
+export default function ArtistPaintingPic({navigation}) {
 
-//ssh root@139.59.69.142
-//http://10.10.32.79:5000/api/attachments
-//http://139.59.69.142:5000/api/attachments
-//http://10.10.32.79:5000/api/products
-
-export default function ArtistPaintingPic(props) {
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [imageUri, setImageUri] = useState(null);
+
+  //set front or back cam
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const cameraRef = useRef(null);
+ 
 
   const [faceData, setFaceData] = useState([]);
 
-  const [imageData, setImageData] = useState();
-
-  //const [serverResponse, setServerResponse] = useState("fjhs");
-
-  const serverResponse = useRef();
+  //server respomse after sending image 
+  const serverResponseArtistPic = useRef();
+  const cameraRef = useRef(null);
 
   ///redux
   const dispatch = useDispatch();
 
-  ///
-
   useEffect(() => {
     (async () => {
-      MediaLibrary.requestPermissionsAsync();
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(cameraStatus.status === "granted");
     })();
@@ -80,8 +77,8 @@ export default function ArtistPaintingPic(props) {
           skipProcessing: true,
         });
         //console.log(data);
-        setImageData(data);
         setImageUri(data.uri);
+        
       } catch (error) {
         console.log(error);
       }
@@ -92,13 +89,12 @@ export default function ArtistPaintingPic(props) {
 
   const savePicture = async () => {
     if (imageUri) {
-      //const asset = await MediaLibrary.createAssetAsync(image);
 
       const formData = new FormData();
       formData.append("attachment", {
         uri: imageUri,
-        name: "myimage.jpg",
-        fileName: "image",
+        name: "artistPainitngImage.jpg",
+        fileName: "artistPainitngImage",
         type: "image/jpg",
       });
 
@@ -111,66 +107,16 @@ export default function ArtistPaintingPic(props) {
           },
           data: formData,
         });
-        //console.log(response.data[0]); ///array of object
 
-        //setServerResponse(JSON.stringify(response.data[0]));
+        serverResponseArtistPic.current = JSON.stringify(response.data[0]);
 
-        serverResponse.current = JSON.stringify(response.data[0]);
-
-        console.log("server response inside try - " + serverResponse.current);
-         dispatch( updatePaintingArtistPic(serverResponse.current ));
+        console.log("server response inside try - " + serverResponseArtistPic.current);
+         dispatch( updatePaintingArtistPic(serverResponseArtistPic.current ));
+         dispatch( updatePaintingArtistImage(imageUri))
 
       } catch (error) {
         console.log(error);
       }
-
-      // console.log(response.data[0].id);
-      // console.log(response.data[0].thumbnail);
-      // console.log(response.data[0]);
-
-      //.........WORKINF PRODUCT ADD......begin.....
-
-      //     productObject = {
-      //       "price": 23,
-      //       "name": "mypic",
-      //       "description": "the best pic",
-      //       "digital_file": "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
-      //       "gallery": "http://10.10.32.79:5000/public/images/arrival-1684924688536.jpg",
-      //       "categories": {
-      //           "name": "traditional"
-      //       },
-      //       "tags": [
-      //           {
-      //               "name": "abstract"
-      //           },
-      //           {
-      //               "name": "other"
-      //           }
-      //       ],
-      //       "subject": [
-      //           {
-      //               "name": "history"
-      //           },
-      //           {
-      //               "name": "other"
-      //           }
-      //       ],
-      //       "medium": "ink",
-      //       "material": "canvas",
-      //       "size": "small",
-      //       "orientation": "portrait",
-      //       "shop_id": "76eccbc2-d807-429b-bd11-b2487244dc1c"
-      //   };
-
-      //   const newResponse = await axios.post(finalURL, productObject, {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   });
-
-      // console.log(JSON.stringify(newResponse));
-
-      //.........WORKINF PRODUCT ADD......end.....
 
       
       setImageUri(null);
@@ -178,8 +124,7 @@ export default function ArtistPaintingPic(props) {
 
       //console.log("image saved successfully");
 
-
-      props.navigation.navigate("FullPaintingPic");
+      navigation.replace("FullPaintingPic");
     }
   };
 

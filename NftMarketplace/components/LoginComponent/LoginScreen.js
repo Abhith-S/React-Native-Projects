@@ -23,7 +23,7 @@ import AppTextInput from "../AppTextInput";
 import { updateLoginToken } from "../../src/features/loginToken/loginTokenSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const registerUserUrl = "http://139.59.69.142:5000/api/token";
+const userLoginUrl = "http://139.59.69.142:5000/api/token";
 
 const LoginScreen = ({navigation}) => {
 
@@ -43,7 +43,7 @@ const LoginScreen = ({navigation}) => {
     try {
       const response = await axios({
         method: "post",
-        url: registerUserUrl,
+        url: userLoginUrl,
         headers: {
           "Content-Type": "application/json",
         },
@@ -69,8 +69,6 @@ const LoginScreen = ({navigation}) => {
 
   };
 
-//console.log(token)
-
 
   return (
     <SafeAreaView>
@@ -94,16 +92,6 @@ const LoginScreen = ({navigation}) => {
           >
             Login
           </Text>
-          {/* <Text
-            style={{
-              //fontFamily: Font["poppins-semiBold"],
-              fontSize: FontSize.large,
-              maxWidth: "60%",
-              textAlign: "center",
-            }}
-          >
-            Welcome back you've been missed!
-          </Text> */}
         </View>
         <View
           style={{

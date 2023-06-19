@@ -1,7 +1,6 @@
 //react packages
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, ScrollView, StyleSheet,Button} from 'react-native';
-import { useDispatch } from "react-redux";
 
 //external packages
 import {
@@ -14,16 +13,54 @@ import {
 import {MaterialCommunityIcons} from 'react-native-vector-icons';
 import {Ionicons} from 'react-native-vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from 'axios';
 
 //components imports
 import Colors from '../../constants/Colors';
+
+//redux
+import { useDispatch,useSelector } from "react-redux";
 import { updateLoginToken } from '../../src/features/loginToken/loginTokenSlice';
 
+//api to get user data
+const useAuthUrl = "http://139.59.69.142:5000/api/me";
 
 export function Profile(){
 
+  //state variables for user data
+  const [userName,setUserName] = useState("")
+  const [userEmail,setUserEmail] = useState('')
+  
+
+//get the token from redux
+  const token = useSelector((state) => state.loginToken.token);
+  console.log("token from redux is " + token);
+
+  //use token to get user details
+  useEffect(()=>{
+    const headers = {
+      Authorization: `Bearer ${token}`
+    };
+  
+    const getUserData = async()=>{
+      try{
+        const response = await axios.get(useAuthUrl, { headers })
+        console.log(response.data)
+        setUserName(response.data.name)
+        setUserEmail(response.data.email)
+      }
+      catch(err){
+        console.log(err)
+      }
+    }
+
+    getUserData()
+  },[])
+
+
   const dispatch = useDispatch();
 
+  //remove token from redux store
   const handleLogout = ()=>{
     dispatch(updateLoginToken({token:""}))
     AsyncStorage.removeItem("token");
@@ -42,8 +79,8 @@ export function Profile(){
             <Title style={[styles.title, {
               marginTop:15,
               marginBottom: 5,
-            }]}>John Doe</Title>
-            <Caption style={styles.caption}>@j_doe</Caption>
+            }]}>{userName}</Title>
+            <Caption style={styles.caption}>@{userName.toLowerCase()}</Caption>
           </View>
         </View>
       </View>
@@ -59,7 +96,7 @@ export function Profile(){
         </View>
         <View style={styles.row}>
           <MaterialCommunityIcons name="email" color="#777777" size={20}/>
-          <Text style={{color:"#777777", marginLeft: 20}}>john_doe@email.com</Text>
+          <Text style={{color:"#777777", marginLeft: 20}}>{userEmail}</Text>
         </View>
       </View>
 
@@ -72,7 +109,7 @@ export function Profile(){
             <Caption>Wallet</Caption>
           </View>
           <View style={styles.infoBox}>
-            <Title>12</Title>
+            <Title>0</Title>
             <Caption>Orders</Caption>
           </View>
       </View>

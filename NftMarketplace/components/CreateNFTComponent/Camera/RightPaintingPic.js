@@ -1,34 +1,39 @@
-import React, { useState, useEffect, useRef ,useContext} from "react";
+//react imports
+import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
+
+//external packages
 import { Camera, CameraType } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
-import Button from "./Button";
-//
-import { updateRightPaintingPic } from "../../../src/features/pictures/picturesSlice";
 import axios from "axios";
+
+//components imports
+import Button from "./Button";
+
+//redux
+import { updateRightPaintingPic } from "../../../src/features/pictures/picturesSlice";
 import { useDispatch } from "react-redux";
-//
+import { updateRightPaintingImage } from "../../../src/features/imagesUri/imagesUriSlice";
 
+//api to send image to server
+const imageURL = "http://139.59.69.142:5000/api/attachments";
 
-
-export default function RightPaintingPic({navigation}) {
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [image, setImage] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
-  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const cameraRef = useRef(null);
-
-  //
-  const imageURL = "http://139.59.69.142:5000/api/attachments";
+export default function RightPaintingPic({ navigation }) {
   const [imageUri, setImageUri] = useState(null);
 
-  const serverResponseRight = useRef();
-  const dispatch = useDispatch();
-//
+  //set front or back cam
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
+  const serverResponseRightPic = useRef();
+  const cameraRef = useRef(null);
+
+  //redux
+  const dispatch = useDispatch();
+
+  //get camera permissions
   useEffect(() => {
     (async () => {
-      MediaLibrary.requestPermissionsAsync();
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(cameraStatus.status === "granted");
     })();
@@ -44,12 +49,9 @@ export default function RightPaintingPic({navigation}) {
         const data = await cameraRef.current.takePictureAsync({
           skipProcessing: true,
         });
-        //console.log(data);
-        
-        setImage(data.uri);
-        setImageUri(data.uri);
 
-        // console.log(values)
+        setImageUri(data.uri);
+        
       } catch (error) {
         console.log(error);
       }
@@ -58,8 +60,6 @@ export default function RightPaintingPic({navigation}) {
 
   const savePicture = async () => {
     if (imageUri) {
-      //const asset = await MediaLibrary.createAssetAsync(image);
-
       const formData = new FormData();
       formData.append("attachment", {
         uri: imageUri,
@@ -77,17 +77,14 @@ export default function RightPaintingPic({navigation}) {
           },
           data: formData,
         });
-        //console.log(response.data[0]); ///array of object
 
-        //setServerResponse(JSON.stringify(response.data[0]));
+        serverResponseRightPic.current = JSON.stringify(response.data[0]);
 
-        serverResponseRight.current = JSON.stringify(response.data[0]);
-
-        console.log("server response inside try RIGHT- " + serverResponseRight.current);
-        dispatch( updateRightPaintingPic(serverResponseRight.current));
-
-        
-
+        console.log(
+          "server response inside try RIGHT- " + serverResponseRightPic.current
+        );
+        dispatch(updateRightPaintingPic(serverResponseRightPic.current));
+        dispatch( updateRightPaintingImage(imageUri))
       } catch (error) {
         console.log(error);
       }
@@ -95,13 +92,13 @@ export default function RightPaintingPic({navigation}) {
       //alert("Picture saved! 🎉");
 
       //console.log("image saved successfully");
-      navigation.navigate("Finished");
+      navigation.replace("Finished");
     }
   };
 
   return (
     <View style={styles.container}>
-      {!image ? (
+      {!imageUri ? (
         <Camera
           style={styles.camera}
           type={type}
@@ -115,7 +112,7 @@ export default function RightPaintingPic({navigation}) {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingHorizontal: 30,
-                marginTop: 40
+                marginTop: 40,
               }}
             >
               <Button
@@ -144,20 +141,18 @@ export default function RightPaintingPic({navigation}) {
               />
             </View>
             <View style={styles.cameraTextContainer}>
-              
-                <Text style={styles.cameraText}>
+              <Text style={styles.cameraText}>
                 Take a photo of the right half of the painting
-                </Text>
-              
+              </Text>
             </View>
           </View>
         </Camera>
       ) : (
-        <Image source={{ uri: image }} style={styles.camera} />
+        <Image source={{ uri: imageUri }} style={styles.camera} />
       )}
 
       <View style={styles.controls}>
-        {image ? (
+        {imageUri ? (
           <View
             style={{
               flexDirection: "row",
@@ -167,7 +162,7 @@ export default function RightPaintingPic({navigation}) {
           >
             <Button
               title="Re-take"
-              onPress={() => setImage(null)}
+              onPress={() => setImageUri(null)}
               icon="retweet"
             />
             <Button title="Save" onPress={savePicture} icon="check" />
@@ -186,7 +181,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-
   },
   controls: {
     flex: 0.5,
@@ -224,13 +218,11 @@ const styles = StyleSheet.create({
   cameraTextContainer: {
     position: "relative",
     //top: 200,
-   
   },
   cameraText: {
     color: "white",
     fontWeight: "bold",
     fontSize: 20,
     textAlign: "center",
-    
   },
 });

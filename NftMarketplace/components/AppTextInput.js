@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Colors from "../constants/Colors";
-import Font from "../constants/Font";
 import FontSize from "../constants/FontSize";
 import Spacing from "../constants/Spacing";
 
