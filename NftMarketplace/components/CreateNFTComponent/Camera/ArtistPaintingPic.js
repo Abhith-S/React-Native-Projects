@@ -9,6 +9,7 @@ import axios from "axios";
 
 //components imports
 import Button from "./Button";
+import LoadingComponent from "../../LoadingComponent"
 
 //redux
 import { updatePaintingArtistPic } from "../../../src/features/pictures/picturesSlice";
@@ -34,6 +35,9 @@ export default function ArtistPaintingPic({navigation}) {
   const serverResponseArtistPic = useRef();
   const cameraRef = useRef(null);
 
+  //check camera has min resolution
+  const [minRes, setMinRes] = useState(false);
+
   ///redux
   const dispatch = useDispatch();
 
@@ -41,8 +45,42 @@ export default function ArtistPaintingPic({navigation}) {
     (async () => {
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(cameraStatus.status === "granted");
+      
+      
+      try{
+        await checkMinResolution();
+        //await checkMinResolution();
+      }
+      catch(err){
+        console.log(err)
+      }
     })();
   }, []);
+
+
+  //check camera resolution
+  const checkMinResolution = async () => {
+    const supportedAspectRatios =
+      await cameraRef.current.getSupportedRatiosAsync();
+    //console.log(supportedAspectRatios);
+
+    const ratio = "16:9";
+
+    const supportedPictureSizes =
+      await cameraRef.current.getAvailablePictureSizesAsync(ratio);
+    //console.log(supportedPictureSizes);
+
+    supportedPictureSizes.includes("3840x2160") &&
+    supportedAspectRatios.includes("16:9")
+      ? setMinRes(true)
+      : setMinRes(false);
+
+  };
+
+  //console.log(`Has Min resolution - ${minRes}`);
+
+  ///
+
 
   if (hasCameraPermission === false) {
     return <Text>No access to camera</Text>;
@@ -70,7 +108,7 @@ export default function ArtistPaintingPic({navigation}) {
   };
 
   const takePicture = async () => {
-    if (cameraRef) {
+    if (cameraRef ) {
       //&& faceData.length > 0
       try {
         const data = await cameraRef.current.takePictureAsync({

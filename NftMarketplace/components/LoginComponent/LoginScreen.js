@@ -16,9 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
 //component imports
-import Spacing from "../../constants/Spacing";
-import FontSize from "../../constants/FontSize";
-import Colors from "../../constants/Colors";
+import {Colors,Spacing,FontSize} from "../../constants/ConstantsExports"
 import AppTextInput from "../AppTextInput";
 import { updateLoginToken } from "../../src/features/loginToken/loginTokenSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";

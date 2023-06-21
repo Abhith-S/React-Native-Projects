@@ -1,6 +1,5 @@
 //react imports
-import { StyleSheet, Text, TextInput, View, ScrollView } from "react-native";
-import { useState } from "react";
+import { StyleSheet} from "react-native";
 
 //external packages
 import { NavigationContainer } from "@react-navigation/native";
@@ -33,8 +32,8 @@ export default function CreateNFT() {
           headerBackVisible: false,
         }}
       >
-        <Stack.Screen name="TextForm" component={TextForm} />
-        <Stack.Screen name="DropDownForm" component={DropDownForm} />
+        {/* <Stack.Screen name="TextForm" component={TextForm} />
+        <Stack.Screen name="DropDownForm" component={DropDownForm} /> */}
         <Stack.Screen name="ArtistPaintingPic" component={ArtistPaintingPic} />
         <Stack.Screen name="FullPaintingPic" component={FullPaintingPic} />
         <Stack.Screen name="LeftPaintingPic" component={LeftPaintingPic}/>

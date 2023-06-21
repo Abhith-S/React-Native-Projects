@@ -143,13 +143,7 @@ export default function FullPaintingPic({navigation}) {
                 }
               />
             </View>
-            <View style={styles.cameraTextContainer}>
-              
-                <Text style={styles.cameraText}>
-                  Take a photo of the entire painting
-                </Text>
-              
-            </View>
+            
           </View>
         </Camera>
       ) : (
@@ -173,8 +167,16 @@ export default function FullPaintingPic({navigation}) {
             <Button title="Save" onPress={savePicture} icon="check" />
           </View>
         ) : (
-          <View>
-            <Button title="Capture" onPress={takePicture} icon="camera" />
+          <View >
+            <View style={styles.cameraTextContainer}>
+              
+              <Text style={styles.cameraText}>
+                Take a photo of the entire painting
+              </Text>
+            
+          </View>
+          <View style={{position:"relative",bottom:25}}>
+            <Button title="Capture" onPress={takePicture} icon="camera" /></View>
           </View>
         )}
       </View>
@@ -184,7 +186,7 @@ export default function FullPaintingPic({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 2,
     justifyContent: "center",
 
   },
@@ -223,7 +225,9 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    // top: 200,
+    
+    //top: 20,
+     bottom:80
    
   },
   cameraText: {
@@ -231,6 +235,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
     textAlign: "center",
+   
+
     
   },
 });

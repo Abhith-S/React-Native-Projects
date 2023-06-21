@@ -1,6 +1,6 @@
 //react packages
 import React, { useEffect, useState } from 'react';
-import {View, ScrollView, StyleSheet,Button} from 'react-native';
+import {View, ScrollView, StyleSheet,Button,TouchableOpacity} from 'react-native';
 
 //external packages
 import {
@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios';
 
 //components imports
-import Colors from '../../constants/Colors';
+import { Colors, FontSize, Spacing } from "../../constants/ConstantsExports";
 
 //redux
 import { useDispatch,useSelector } from "react-redux";
@@ -147,7 +147,35 @@ export function Profile(){
           </View>
         </TouchableRipple>
       </View>
-      <Button onPress={handleLogout} title="Logout" color={Colors.blue} />
+      {/* <Button onPress={handleLogout} title="Logout" color={Colors.blue} /> */}
+      <TouchableOpacity
+        
+          style={{
+            padding: Spacing ,
+            backgroundColor: Colors.primary,
+            //marginVertical: Spacing * 3,
+            //borderRadius: Spacing,
+            shadowColor: Colors.primary,
+            shadowOffset: {
+              width: 0,
+              height: Spacing,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: Spacing,
+          }}
+          onPress={handleLogout}
+        >
+          <Text
+            style={{
+              //fontFamily: Font["poppins-bold"],
+              color: Colors.onPrimary,
+              textAlign: "center",
+              fontSize: FontSize.medium,
+            }}
+          >
+            Logout
+          </Text>
+        </TouchableOpacity>
     </ScrollView>
   );
 };

@@ -140,13 +140,7 @@ export default function LeftPaintingPic({navigation}) {
                 }
               />
             </View>
-            <View style={styles.cameraTextContainer}>
-              
-                <Text style={styles.cameraText}>
-                Take a photo of the left half of the painting
-                </Text>
-              
-            </View>
+            
           </View>
         </Camera>
       ) : (
@@ -170,8 +164,16 @@ export default function LeftPaintingPic({navigation}) {
             <Button title="Save" onPress={savePicture} icon="check" />
           </View>
         ) : (
-          <View>
-            <Button title="Capture" onPress={takePicture} icon="camera" />
+          <View >
+            <View style={styles.cameraTextContainer}>
+              
+              <Text style={styles.cameraText}>
+              Take a photo of the left half of the painting
+              </Text>
+            
+          </View>
+          <View style={{position:"relative",bottom:40}}>
+            <Button title="Capture" onPress={takePicture} icon="camera" /></View>
           </View>
         )}
       </View>
@@ -221,6 +223,7 @@ const styles = StyleSheet.create({
   cameraTextContainer: {
     position: "relative",
     //top: 200,
+    bottom:90
    
   },
   cameraText: {

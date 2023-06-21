@@ -140,11 +140,7 @@ export default function RightPaintingPic({ navigation }) {
                 }
               />
             </View>
-            <View style={styles.cameraTextContainer}>
-              <Text style={styles.cameraText}>
-                Take a photo of the right half of the painting
-              </Text>
-            </View>
+            
           </View>
         </Camera>
       ) : (
@@ -169,7 +165,13 @@ export default function RightPaintingPic({ navigation }) {
           </View>
         ) : (
           <View>
-            <Button title="Capture" onPress={takePicture} icon="camera" />
+            <View style={styles.cameraTextContainer}>
+              <Text style={styles.cameraText}>
+                Take a photo of the right half of the painting
+              </Text>
+            </View>
+            <View style={{position:"relative",bottom:40}}>
+            <Button title="Capture" onPress={takePicture} icon="camera" /></View>
           </View>
         )}
       </View>
@@ -191,6 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    
   },
   // text: {
   //   fontWeight: "bold",
@@ -217,7 +220,7 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    //top: 200,
+    bottom:90
   },
   cameraText: {
     color: "white",

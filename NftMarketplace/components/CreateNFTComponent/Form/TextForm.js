@@ -1,9 +1,20 @@
 // Formik x React Native example
-import React, { useState, createContext } from "react";
-import { Button, TextInput, View, StyleSheet, Text } from "react-native";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import {
+  Button,
+  TextInput,
+  View,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  Alert
+} from "react-native";
+import { useDispatch } from "react-redux";
 import { updateTextForm } from "../../../src/features/textForm/textFormSlice";
+
+import AppTextInput from "../../AppTextInput";
+import { Colors, FontSize, Spacing } from "../../../constants/ConstantsExports";
 
 const TextForm = (props) => {
   const [paintingName, setPaintingName] = useState();
@@ -13,74 +24,101 @@ const TextForm = (props) => {
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    dispatch(updateTextForm({ paintingName, paintingDescription, price }));
 
-    props.navigation.replace("DropDownForm");
+    if(paintingName && paintingDescription && price){
+      dispatch(updateTextForm({ paintingName, paintingDescription, price }));
+
+      props.navigation.replace("DropDownForm");
+    }else{
+      Alert.alert("Alert", "Fields cannot be empty", [
+          
+        { text: "OK"},
+      ])
+    }
+    
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.container_text}>Fill the details below : </Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.container_input}
-          onChangeText={(newText) => setPaintingName(newText)}
-          placeholder="Painting Name"
-        />
-        <TextInput
-          style={styles.container_input}
-          onChangeText={(newText) => setPaintingDescription(newText)}
-          placeholder="Painting Description"
-          
-        />
-
-        <TextInput
-          style={styles.container_input}
-          onChangeText={(newText) => setPrice(newText)}
-          placeholder="Price"
-          inputMode="numeric"
-        />
-
-        <View style={styles.container_button}>
-          <Button onPress={handleSubmit} title="Submit" />
+    
+    <SafeAreaView>
+      <View
+        style={{
+          padding: Spacing * 2,
+        }}
+      >
+        <View
+          style={{
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: FontSize.large,
+              color: Colors.primary,
+              //fontFamily: Font["poppins-bold"],
+              marginTop: Spacing,
+            }}
+          >
+            Fill the details below :
+          </Text>
         </View>
+        <View
+          style={{
+            marginTop: Spacing * 2,
+            marginBottom: Spacing * 3,
+          }}
+        >
+          <AppTextInput
+            onChangeText={(newText) => setPaintingName(newText)}
+            placeholder="Painting Name"
+          />
+          <AppTextInput
+            onChangeText={(newText) => setPaintingDescription(newText)}
+            placeholder="Painting Description"
+          />
+
+          <AppTextInput
+            onChangeText={(newText) => setPrice(newText)}
+            placeholder="Price"
+            inputMode="numeric"
+          />
+        </View>
+
+        
+
+        <TouchableOpacity
+          style={{
+            padding: Spacing * 2,
+            backgroundColor: Colors.primary,
+            marginVertical: Spacing * 3,
+            borderRadius: Spacing,
+            shadowColor: Colors.primary,
+            shadowOffset: {
+              width: 0,
+              height: Spacing,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: Spacing,
+          }}
+          onPress={handleSubmit}
+        >
+          <Text
+            style={{
+              //fontFamily: Font["poppins-bold"],
+              color: Colors.onPrimary,
+              textAlign: "center",
+              fontSize: FontSize.large,
+            }}
+          >
+            Submit
+          </Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#F5F5F5",
-    marginBottom: "6%",
-  },
-  inputContainer: {
-    marginHorizontal: 20,
-  },
-  container_input: {
-    marginVertical: 16,
-    fontSize: 15,
-    padding: 10,
-    flexDirection: "row",
 
-    backgroundColor: "#d9dbda",
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "space-evenly",
-  },
-  container_button: {
-    marginTop: "8%",
-    marginBottom: "16%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  container_text: {
-    marginVertical: 10,
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-});
 
 export default TextForm;
 //export {ValuesContext};

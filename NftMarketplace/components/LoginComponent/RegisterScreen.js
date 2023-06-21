@@ -63,7 +63,7 @@ const RegisterScreen = ({navigation}) => {
         </View>
 
         <TouchableOpacity
-         onPress={() => {navigation.navigate("Dashboard")}}
+         //onPress={() => {navigation.navigate("Dashboard")}}
           style={{
             padding: Spacing * 2,
             backgroundColor: Colors.primary,

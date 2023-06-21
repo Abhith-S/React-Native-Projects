@@ -7,6 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Button from "./Button";
 
 import * as FaceDetector from "expo-face-detector";
+import LoadingComponent from "./LoadingComponent";
 
 export default function ProfilePic({setCurrentScreen}) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -15,6 +16,8 @@ export default function ProfilePic({setCurrentScreen}) {
   const cameraRef = useRef(null);
 
   const [faceData, setFaceData] = React.useState([]);
+
+  const [isLoading,setIsLoading] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -50,7 +53,8 @@ export default function ProfilePic({setCurrentScreen}) {
   };
 
   const takePicture = async () => {
-    if (cameraRef && faceData.length > 0) {
+    if (cameraRef ) {
+      //&& faceData.length > 0
       try {
         const data = await cameraRef.current.takePictureAsync();
         console.log(data);
@@ -70,7 +74,7 @@ export default function ProfilePic({setCurrentScreen}) {
         const asset = await MediaLibrary.createAssetAsync(image);
         alert("Picture saved! 🎉");
         setImage(null);
-        setCurrentScreen("artist")
+        //setCurrentScreen("artist")
         console.log("saved successfully");
       } catch (error) {
         console.log(error);
@@ -83,7 +87,7 @@ export default function ProfilePic({setCurrentScreen}) {
       {!image ? (
         <Camera
           style={styles.camera}
-          type={CameraType.front}
+          type={CameraType.back}
           ref={cameraRef}
           autoFocus={true}
           onFacesDetected={handleFacesDetected}
@@ -129,6 +133,7 @@ export default function ProfilePic({setCurrentScreen}) {
           <Button title="Take a selfie" onPress={takePicture} icon="camera" />
         )}
       </View>
+      <LoadingComponent isLoading={isLoading}/>
     </View>
   );
 }

@@ -6,9 +6,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View,Alert
 } from "react-native";
-import React from "react";
+import React,{useState,useEffect,useLayoutEffect} from "react";
 
 //component imports
 import Spacing from "../../constants/Spacing";
@@ -19,6 +19,7 @@ const { height } = Dimensions.get("window");
 
 const WelcomeScreen = ({navigation}) => {
 
+   
   return (
     <SafeAreaView>
       <View>

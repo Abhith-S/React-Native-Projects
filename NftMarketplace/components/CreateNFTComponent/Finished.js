@@ -1,9 +1,19 @@
 //react imports
 import React from "react";
-import { Button, View, Image, StyleSheet,Text, ScrollView } from "react-native";
+import {
+  View,
+  Image,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 
 //redux
 import { useSelector } from "react-redux";
+
+//compomemts imports
+import { Colors, FontSize, Spacing } from "../../constants/ConstantsExports";
 
 //external packages
 import axios from "axios";
@@ -11,9 +21,8 @@ import axios from "axios";
 //api to send entire product to server
 const productUrl = "http://139.59.69.142:5000/api/products";
 
-const Finished = () => {
-
- //data from textform - redux
+const Finished = ({ navigation }) => {
+  //data from textform - redux
   const paintingName = useSelector((state) => state.textForm.paintingName);
   const paintingDescription = useSelector(
     (state) => state.textForm.paintingDescription
@@ -28,7 +37,25 @@ const Finished = () => {
   const size = useSelector((state) => state.dropDownForm.size);
   const orientation = useSelector((state) => state.dropDownForm.orientation);
 
-   //server response of image upload - redux
+  //styles and subject data
+  var stylesArray = [];
+
+  style.map((value) => {
+    //console.log(value);
+    stylesArray.push({ name: value });
+  });
+
+  var subjectsArray = [];
+
+  subject.map((value) => {
+    //console.log(value);
+    subjectsArray.push({ name: value });
+  });
+
+  console.log(stylesArray);
+  console.log(subjectsArray);
+
+  //server response of image upload - redux
   const paintingArtistPic = useSelector(
     (state) => state.pictures.paintingArtistPic
   );
@@ -45,7 +72,6 @@ const Finished = () => {
     (state) => state.pictures.rightPaintingPic
   );
 
-  
   //uri of captured images - redux
   const paintingArtistImage = useSelector(
     (state) => state.imagesUri.paintingArtistImage
@@ -62,7 +88,7 @@ const Finished = () => {
     (state) => state.imagesUri.rightPaintingImage
   );
 
-  
+  //all images data
   var imageGallery = [];
 
   imageGallery.push(
@@ -72,10 +98,8 @@ const Finished = () => {
     rightPaintingPic
   );
 
-  
   //send data to server
   const handleSubmit = async () => {
-
     productObject = {
       price: Number(price),
       name: paintingName,
@@ -85,8 +109,8 @@ const Finished = () => {
       categories: {
         name: "traditional",
       },
-      tags: [{ name: style[0][0] }, { name: style[0][1] }],
-      subject: [{ name: subject[0][0] }, { name: subject[0][1] }],
+      tags: stylesArray,
+      subject: subjectsArray,
       medium: medium,
       material: material,
       size: size,
@@ -103,25 +127,58 @@ const Finished = () => {
     });
 
     console.log(response.data);
+    navigation.replace("TextForm");
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} overScrollMode="never">
-      <View style={styles.container_header}>
-        <Text style={styles.header_text}>Summary</Text>
+    <ScrollView
+      contentContainerStyle={{
+        padding: Spacing * 2,
+      }}
+      overScrollMode="never"
+    >
+      <View
+        style={{
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: FontSize.large,
+            color: Colors.primary,
+            //fontFamily: Font["poppins-bold"],
+            //marginTop: Spacing,
+          }}
+        >
+          Summary
+        </Text>
       </View>
-      <View style={styles.container_textForm}>
+      <View
+        style={{
+          marginTop: Spacing * 2,
+          marginBottom: Spacing * 3,
+        }}
+      >
         <Text>Painting Name : {paintingName}</Text>
         <Text>Painting Description : {paintingDescription}</Text>
-        <Text>Subject : {subject[0][0]} {subject[0][1]}</Text>
-        <Text>Style : {style[0][0]} {style[0][1]}</Text>
+        <Text>
+          Subjects :
+          {subject.map((value, index) => {
+            return <Text key={index}> {value} </Text>;
+          })}
+        </Text>
+        <Text>
+          Styles :{" "}
+          {style.map((value, index) => {
+            return <Text key={index}> {value} </Text>;
+          })}
+        </Text>
         <Text>Medium : {medium}</Text>
         <Text>Material : {material}</Text>
         <Text>Size : {size}</Text>
         <Text>Orientation : {orientation}</Text>
-
       </View>
-      <View style={styles.container_dropDownForm}></View>
+
       <View style={styles.container_images}>
         <Image source={{ uri: paintingArtistImage }} style={styles.image} />
         <Image source={{ uri: fullPaintingImage }} style={styles.image} />
@@ -129,38 +186,45 @@ const Finished = () => {
         <Image source={{ uri: rightPaintingImage }} style={styles.image} />
       </View>
 
-      <View style={styles.container_button}>
-        <Button onPress={handleSubmit} title="Create Product" color="#841584" />
-      </View>
+      <TouchableOpacity
+        style={{
+          padding: Spacing * 2,
+          backgroundColor: Colors.primary,
+          marginVertical: Spacing * 3,
+          borderRadius: Spacing,
+          shadowColor: Colors.primary,
+          shadowOffset: {
+            width: 0,
+            height: Spacing,
+          },
+          shadowOpacity: 0.3,
+          shadowRadius: Spacing,
+        }}
+        onPress={handleSubmit}
+      >
+        <Text
+          style={{
+            //fontFamily: Font["poppins-bold"],
+            color: Colors.onPrimary,
+            textAlign: "center",
+            fontSize: FontSize.large,
+          }}
+        >
+          Create Product
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
-
+//margin:Spacing
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    
-  },
-  container_header: {
-    margin: 20,
-    marginTop: 10,
-  },
-  header_text: {
-    fontSize: 20,
-  },
-  container_textForm: {
-    
-  },
-  container_dropDownForm: {},
-  container_images: {},
   image: {
     height: 280,
-    width: 200,
-    margin:20,
+    width: 280,
+    margin: Spacing,
   },
-  container_button: {
-    marginBottom:30
+  container_images: {
+    alignSelf: "center",
   },
 });
 export default Finished;

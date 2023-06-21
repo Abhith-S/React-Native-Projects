@@ -3,7 +3,10 @@ const black = "#000";
 const dark = "#626262";
 const blue = "#1F41BB";
 const gray = "#ECECEC";
-const lightBlue = "#f1f4ff";
+const lightBlue = "#4169E1";
+
+const inputWhite  ="#f1f4ff";
+
 
 export default {
   darkText: dark,
@@ -23,4 +26,5 @@ export default {
   backgroundLight: '#F0F0F3',
   backgroundMedium: '#B9B9B9',
   backgroundDark: '#777777',
+  inputWhite
 };
