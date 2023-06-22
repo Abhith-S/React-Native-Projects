@@ -32,8 +32,8 @@ export default function CreateNFT() {
           headerBackVisible: false,
         }}
       >
-        {/* <Stack.Screen name="TextForm" component={TextForm} />
-        <Stack.Screen name="DropDownForm" component={DropDownForm} /> */}
+        <Stack.Screen name="TextForm" component={TextForm} />
+        <Stack.Screen name="DropDownForm" component={DropDownForm} />
         <Stack.Screen name="ArtistPaintingPic" component={ArtistPaintingPic} />
         <Stack.Screen name="FullPaintingPic" component={FullPaintingPic} />
         <Stack.Screen name="LeftPaintingPic" component={LeftPaintingPic}/>

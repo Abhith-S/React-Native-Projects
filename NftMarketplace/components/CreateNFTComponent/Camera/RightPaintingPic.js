@@ -13,6 +13,7 @@ import Button from "./Button";
 import { updateRightPaintingPic } from "../../../src/features/pictures/picturesSlice";
 import { useDispatch } from "react-redux";
 import { updateRightPaintingImage } from "../../../src/features/imagesUri/imagesUriSlice";
+import LoadingComponent from "../../LoadingComponent";
 
 //api to send image to server
 const imageURL = "http://139.59.69.142:5000/api/attachments";
@@ -30,6 +31,9 @@ export default function RightPaintingPic({ navigation }) {
 
   //redux
   const dispatch = useDispatch();
+
+  //for loading
+  const [isLoading, setIsLoading] = useState(false);
 
   //get camera permissions
   useEffect(() => {
@@ -51,7 +55,6 @@ export default function RightPaintingPic({ navigation }) {
         });
 
         setImageUri(data.uri);
-        
       } catch (error) {
         console.log(error);
       }
@@ -59,6 +62,7 @@ export default function RightPaintingPic({ navigation }) {
   };
 
   const savePicture = async () => {
+    setIsLoading(true);
     if (imageUri) {
       const formData = new FormData();
       formData.append("attachment", {
@@ -84,15 +88,20 @@ export default function RightPaintingPic({ navigation }) {
           "server response inside try RIGHT- " + serverResponseRightPic.current
         );
         dispatch(updateRightPaintingPic(serverResponseRightPic.current));
-        dispatch( updateRightPaintingImage(imageUri))
+        dispatch(updateRightPaintingImage(imageUri));
+
+        setImageUri(null);
+        setIsLoading(false);
+        alert("Picture saved! 🎉");
+
+        //console.log("image saved successfully");
+        navigation.replace("Finished");
       } catch (error) {
         console.log(error);
+        setIsLoading(false);
+        alert("Upload failed. Try again.");
+        navigation.replace("RightPaintingPic");
       }
-      setImageUri(null);
-      //alert("Picture saved! 🎉");
-
-      //console.log("image saved successfully");
-      navigation.replace("Finished");
     }
   };
 
@@ -140,7 +149,6 @@ export default function RightPaintingPic({ navigation }) {
                 }
               />
             </View>
-            
           </View>
         </Camera>
       ) : (
@@ -149,19 +157,28 @@ export default function RightPaintingPic({ navigation }) {
 
       <View style={styles.controls}>
         {imageUri ? (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 50,
-            }}
-          >
-            <Button
-              title="Re-take"
-              onPress={() => setImageUri(null)}
-              icon="retweet"
-            />
-            <Button title="Save" onPress={savePicture} icon="check" />
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 50,
+              }}
+            >
+              <Button
+                title="Re-take"
+                onPress={() => setImageUri(null)}
+                icon="retweet"
+              />
+              <Button title="Save" onPress={savePicture} icon="check" />
+            </View>
+            {isLoading && (
+              <LoadingComponent
+                isLoading={isLoading}
+                color={"white"}
+                style={{ bottom: 300 }}
+              />
+            )}
           </View>
         ) : (
           <View>
@@ -170,8 +187,9 @@ export default function RightPaintingPic({ navigation }) {
                 Take a photo of the right half of the painting
               </Text>
             </View>
-            <View style={{position:"relative",bottom:40}}>
-            <Button title="Capture" onPress={takePicture} icon="camera" /></View>
+            <View style={{ position: "relative", bottom: 40 }}>
+              <Button title="Capture" onPress={takePicture} icon="camera" />
+            </View>
           </View>
         )}
       </View>
@@ -193,7 +211,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    
   },
   // text: {
   //   fontWeight: "bold",
@@ -220,7 +237,7 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    bottom:90
+    bottom: 90,
   },
   cameraText: {
     color: "white",

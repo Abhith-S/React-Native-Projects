@@ -1,11 +1,6 @@
 //react packages
 import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Dimensions,
-  Alert,
+  StyleSheet
 } from "react-native";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import { useEffect, useLayoutEffect, useState } from "react";

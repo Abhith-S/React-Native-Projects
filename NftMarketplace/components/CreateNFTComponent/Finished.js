@@ -1,5 +1,5 @@
 //react imports
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Image,
@@ -17,11 +17,15 @@ import { Colors, FontSize, Spacing } from "../../constants/ConstantsExports";
 
 //external packages
 import axios from "axios";
+import LoadingComponent from "../LoadingComponent";
 
 //api to send entire product to server
 const productUrl = "http://139.59.69.142:5000/api/products";
 
 const Finished = ({ navigation }) => {
+  //for loading
+  const [isLoading, setIsLoading] = useState(false);
+
   //data from textform - redux
   const paintingName = useSelector((state) => state.textForm.paintingName);
   const paintingDescription = useSelector(
@@ -100,6 +104,7 @@ const Finished = ({ navigation }) => {
 
   //send data to server
   const handleSubmit = async () => {
+    setIsLoading(true);
     productObject = {
       price: Number(price),
       name: paintingName,
@@ -120,14 +125,21 @@ const Finished = ({ navigation }) => {
 
     //console.log(productObject);
 
-    const response = await axios.post(productUrl, productObject, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    console.log(response.data);
-    navigation.replace("TextForm");
+    try {
+      const response = await axios.post(productUrl, productObject, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setIsLoading(false);
+      alert("Product created! 🎉");
+      console.log(response.data);
+      navigation.replace("TextForm");
+    } catch (err) {
+      setIsLoading(false);
+      alert("Product creation failed");
+      console.log(err);
+    }
   };
 
   return (
@@ -144,7 +156,7 @@ const Finished = ({ navigation }) => {
       >
         <Text
           style={{
-            fontSize: FontSize.large,
+            fontSize: FontSize.xLarge,
             color: Colors.primary,
             //fontFamily: Font["poppins-bold"],
             //marginTop: Spacing,
@@ -157,26 +169,31 @@ const Finished = ({ navigation }) => {
         style={{
           marginTop: Spacing * 2,
           marginBottom: Spacing * 3,
+          fontSize: FontSize.large,
         }}
       >
-        <Text>Painting Name : {paintingName}</Text>
-        <Text>Painting Description : {paintingDescription}</Text>
-        <Text>
+        <Text style={styles.container_text}>
+          Painting Name : {paintingName}
+        </Text>
+        <Text style={styles.container_text}>
+          Painting Description : {paintingDescription}
+        </Text>
+        <Text style={styles.container_text}>
           Subjects :
           {subject.map((value, index) => {
             return <Text key={index}> {value} </Text>;
           })}
         </Text>
-        <Text>
+        <Text style={styles.container_text}>
           Styles :{" "}
           {style.map((value, index) => {
             return <Text key={index}> {value} </Text>;
           })}
         </Text>
-        <Text>Medium : {medium}</Text>
-        <Text>Material : {material}</Text>
-        <Text>Size : {size}</Text>
-        <Text>Orientation : {orientation}</Text>
+        <Text style={styles.container_text}>Medium : {medium}</Text>
+        <Text style={styles.container_text}>Material : {material}</Text>
+        <Text style={styles.container_text}>Size : {size}</Text>
+        <Text style={styles.container_text}>Orientation : {orientation}</Text>
       </View>
 
       <View style={styles.container_images}>
@@ -213,6 +230,13 @@ const Finished = ({ navigation }) => {
           Create Product
         </Text>
       </TouchableOpacity>
+      {isLoading && (
+        <LoadingComponent
+          isLoading={isLoading}
+          color={Colors.primary}
+          style={{ bottom: 300 }}
+        />
+      )}
     </ScrollView>
   );
 };
@@ -225,6 +249,9 @@ const styles = StyleSheet.create({
   },
   container_images: {
     alignSelf: "center",
+  },
+  container_text: {
+    fontSize: FontSize.medium,
   },
 });
 export default Finished;

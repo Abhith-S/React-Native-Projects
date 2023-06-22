@@ -13,26 +13,28 @@ import Button from "./Button";
 import { updateFullPaintingPic } from "../../../src/features/pictures/picturesSlice";
 import { useDispatch } from "react-redux";
 import { updateFullPaintingImage } from "../../../src/features/imagesUri/imagesUriSlice";
+import LoadingComponent from "../../LoadingComponent";
 
 //api to send image to server
 const imageURL = "http://139.59.69.142:5000/api/attachments";
 
-export default function FullPaintingPic({navigation}) {
-
+export default function FullPaintingPic({ navigation }) {
   const [imageUri, setImageUri] = useState(null);
 
   //set front or back cam
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);   
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
-  //server respomse after sending image 
+  //server respomse after sending image
   const serverResponseFullPic = useRef();
   const cameraRef = useRef(null);
 
   //redux
   const dispatch = useDispatch();
 
+  //for loading
+  const [isLoading, setIsLoading] = useState(false);
 
   //get camera permissions
   useEffect(() => {
@@ -53,7 +55,6 @@ export default function FullPaintingPic({navigation}) {
           skipProcessing: true,
         });
         setImageUri(data.uri);
-        
       } catch (error) {
         console.log(error);
       }
@@ -61,8 +62,8 @@ export default function FullPaintingPic({navigation}) {
   };
 
   const savePicture = async () => {
+    setIsLoading(true);
     if (imageUri) {
-      
       const formData = new FormData();
       formData.append("attachment", {
         uri: imageUri,
@@ -83,19 +84,24 @@ export default function FullPaintingPic({navigation}) {
 
         serverResponseFullPic.current = JSON.stringify(response.data[0]);
 
-        console.log("server response inside try FULL - " + serverResponseFullPic.current);
-         dispatch( updateFullPaintingPic(serverResponseFullPic.current ));
-         dispatch( updateFullPaintingImage(imageUri))
+        console.log(
+          "server response inside try FULL - " + serverResponseFullPic.current
+        );
+        dispatch(updateFullPaintingPic(serverResponseFullPic.current));
+        dispatch(updateFullPaintingImage(imageUri));
 
-        
+        setImageUri(null);
+        setIsLoading(false);
+        alert("Picture saved! 🎉");
+
+        //console.log("image saved successfully");
+        navigation.replace("LeftPaintingPic");
       } catch (error) {
         console.log(error);
+        setIsLoading(false);
+        alert("Upload failed. Try again.");
+        navigation.replace("FullPaintingPic");
       }
-      setImageUri(null);
-      //alert("Picture saved! 🎉");
-
-      //console.log("image saved successfully");
-      navigation.replace("LeftPaintingPic");
     }
   };
 
@@ -115,7 +121,7 @@ export default function FullPaintingPic({navigation}) {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingHorizontal: 30,
-                marginTop: 40
+                marginTop: 40,
               }}
             >
               <Button
@@ -143,7 +149,6 @@ export default function FullPaintingPic({navigation}) {
                 }
               />
             </View>
-            
           </View>
         </Camera>
       ) : (
@@ -152,31 +157,39 @@ export default function FullPaintingPic({navigation}) {
 
       <View style={styles.controls}>
         {imageUri ? (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 50,
-            }}
-          >
-            <Button
-              title="Re-take"
-              onPress={() => setImageUri(null)}
-              icon="retweet"
-            />
-            <Button title="Save" onPress={savePicture} icon="check" />
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 50,
+              }}
+            >
+              <Button
+                title="Re-take"
+                onPress={() => setImageUri(null)}
+                icon="retweet"
+              />
+              <Button title="Save" onPress={savePicture} icon="check" />
+            </View>
+            {isLoading && (
+              <LoadingComponent
+                isLoading={isLoading}
+                color={"white"}
+                style={{ bottom: 300 }}
+              />
+            )}
           </View>
         ) : (
-          <View >
+          <View>
             <View style={styles.cameraTextContainer}>
-              
               <Text style={styles.cameraText}>
                 Take a photo of the entire painting
               </Text>
-            
-          </View>
-          <View style={{position:"relative",bottom:25}}>
-            <Button title="Capture" onPress={takePicture} icon="camera" /></View>
+            </View>
+            <View style={{ position: "relative", bottom: 25 }}>
+              <Button title="Capture" onPress={takePicture} icon="camera" />
+            </View>
           </View>
         )}
       </View>
@@ -188,7 +201,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 2,
     justifyContent: "center",
-
   },
   controls: {
     flex: 0.5,
@@ -225,18 +237,14 @@ const styles = StyleSheet.create({
   },
   cameraTextContainer: {
     position: "relative",
-    
+
     //top: 20,
-     bottom:80
-   
+    bottom: 80,
   },
   cameraText: {
     color: "white",
     fontWeight: "bold",
     fontSize: 20,
     textAlign: "center",
-   
-
-    
   },
 });

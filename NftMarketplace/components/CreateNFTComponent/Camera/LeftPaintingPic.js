@@ -13,23 +13,27 @@ import Button from "./Button";
 import { updateLeftPaintingPic } from "../../../src/features/pictures/picturesSlice";
 import { useDispatch } from "react-redux";
 import { updateLeftPaintingImage } from "../../../src/features/imagesUri/imagesUriSlice";
+import LoadingComponent from "../../LoadingComponent";
 
 //api to send image to server
 const imageURL = "http://139.59.69.142:5000/api/attachments";
 
-export default function LeftPaintingPic({navigation}) {
+export default function LeftPaintingPic({ navigation }) {
   const [imageUri, setImageUri] = useState(null);
 
   //set front or back cam
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);   
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
 
   const serverResponseLeftPic = useRef();
   const cameraRef = useRef(null);
 
   //redux
   const dispatch = useDispatch();
+
+  //for loading
+  const [isLoading, setIsLoading] = useState(false);
 
   //get camera permissions
   useEffect(() => {
@@ -49,9 +53,8 @@ export default function LeftPaintingPic({navigation}) {
         const data = await cameraRef.current.takePictureAsync({
           skipProcessing: true,
         });
-        
+
         setImageUri(data.uri);
-        
       } catch (error) {
         console.log(error);
       }
@@ -59,8 +62,8 @@ export default function LeftPaintingPic({navigation}) {
   };
 
   const savePicture = async () => {
+    setIsLoading(true);
     if (imageUri) {
-
       const formData = new FormData();
       formData.append("attachment", {
         uri: imageUri,
@@ -81,18 +84,24 @@ export default function LeftPaintingPic({navigation}) {
 
         serverResponseLeftPic.current = JSON.stringify(response.data[0]);
 
-        console.log("server response inside try LEFT- " + serverResponseLeftPic.current);
-         dispatch( updateLeftPaintingPic(serverResponseLeftPic.current ));
-         dispatch( updateLeftPaintingImage(imageUri))
+        console.log(
+          "server response inside try LEFT- " + serverResponseLeftPic.current
+        );
+        dispatch(updateLeftPaintingPic(serverResponseLeftPic.current));
+        dispatch(updateLeftPaintingImage(imageUri));
 
+        setImageUri(null);
+        setIsLoading(false);
+        alert("Picture saved! 🎉");
+
+        //console.log("image saved successfully");
+        navigation.replace("RightPaintingPic");
       } catch (error) {
         console.log(error);
+        setIsLoading(false);
+        alert("Upload failed. Try again.");
+        navigation.replace("LeftPaintingPic");
       }
-      setImageUri(null);
-      //alert("Picture saved! 🎉");
-
-      //console.log("image saved successfully");
-      navigation.replace("RightPaintingPic");
     }
   };
 
@@ -112,7 +121,7 @@ export default function LeftPaintingPic({navigation}) {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingHorizontal: 30,
-                marginTop: 40
+                marginTop: 40,
               }}
             >
               <Button
@@ -140,7 +149,6 @@ export default function LeftPaintingPic({navigation}) {
                 }
               />
             </View>
-            
           </View>
         </Camera>
       ) : (
@@ -149,31 +157,39 @@ export default function LeftPaintingPic({navigation}) {
 
       <View style={styles.controls}>
         {imageUri ? (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 50,
-            }}
-          >
-            <Button
-              title="Re-take"
-              onPress={() => setImageUri(null)}
-              icon="retweet"
-            />
-            <Button title="Save" onPress={savePicture} icon="check" />
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 50,
+              }}
+            >
+              <Button
+                title="Re-take"
+                onPress={() => setImageUri(null)}
+                icon="retweet"
+              />
+              <Button title="Save" onPress={savePicture} icon="check" />
+            </View>
+            {isLoading && (
+              <LoadingComponent
+                isLoading={isLoading}
+                color={"white"}
+                style={{ bottom: 300 }}
+              />
+            )}
           </View>
         ) : (
-          <View >
+          <View>
             <View style={styles.cameraTextContainer}>
-              
               <Text style={styles.cameraText}>
-              Take a photo of the left half of the painting
+                Take a photo of the left half of the painting
               </Text>
-            
-          </View>
-          <View style={{position:"relative",bottom:40}}>
-            <Button title="Capture" onPress={takePicture} icon="camera" /></View>
+            </View>
+            <View style={{ position: "relative", bottom: 40 }}>
+              <Button title="Capture" onPress={takePicture} icon="camera" />
+            </View>
           </View>
         )}
       </View>
@@ -185,7 +201,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-
   },
   controls: {
     flex: 0.5,
@@ -223,14 +238,12 @@ const styles = StyleSheet.create({
   cameraTextContainer: {
     position: "relative",
     //top: 200,
-    bottom:90
-   
+    bottom: 90,
   },
   cameraText: {
     color: "white",
     fontWeight: "bold",
     fontSize: 20,
     textAlign: "center",
-    
   },
 });

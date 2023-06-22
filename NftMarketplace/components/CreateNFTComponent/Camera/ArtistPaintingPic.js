@@ -9,7 +9,7 @@ import axios from "axios";
 
 //components imports
 import Button from "./Button";
-import LoadingComponent from "../../LoadingComponent"
+import LoadingComponent from "../../LoadingComponent";
 
 //redux
 import { updatePaintingArtistPic } from "../../../src/features/pictures/picturesSlice";
@@ -19,19 +19,17 @@ import { useDispatch } from "react-redux";
 //api to send image to server
 const imageURL = "http://139.59.69.142:5000/api/attachments";
 
-export default function ArtistPaintingPic({navigation}) {
-
+export default function ArtistPaintingPic({ navigation }) {
   const [imageUri, setImageUri] = useState(null);
 
   //set front or back cam
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
- 
 
   const [faceData, setFaceData] = useState([]);
 
-  //server respomse after sending image 
+  //server respomse after sending image
   const serverResponseArtistPic = useRef();
   const cameraRef = useRef(null);
 
@@ -41,22 +39,23 @@ export default function ArtistPaintingPic({navigation}) {
   ///redux
   const dispatch = useDispatch();
 
+  //for loading
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     (async () => {
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(cameraStatus.status === "granted");
-      
-      
-      try{
-        await checkMinResolution();
-        //await checkMinResolution();
-      }
-      catch(err){
-        console.log(err)
-      }
+
+      // try{
+      //   await checkMinResolution();
+      //   //await checkMinResolution();
+      // }
+      // catch(err){
+      //   console.log(err)
+      // }
     })();
   }, []);
-
 
   //check camera resolution
   const checkMinResolution = async () => {
@@ -74,13 +73,11 @@ export default function ArtistPaintingPic({navigation}) {
     supportedAspectRatios.includes("16:9")
       ? setMinRes(true)
       : setMinRes(false);
-
   };
 
   //console.log(`Has Min resolution - ${minRes}`);
 
   ///
-
 
   if (hasCameraPermission === false) {
     return <Text>No access to camera</Text>;
@@ -108,7 +105,7 @@ export default function ArtistPaintingPic({navigation}) {
   };
 
   const takePicture = async () => {
-    if (cameraRef ) {
+    if (cameraRef && faceData.length > 0) {
       //&& faceData.length > 0
       try {
         const data = await cameraRef.current.takePictureAsync({
@@ -116,7 +113,6 @@ export default function ArtistPaintingPic({navigation}) {
         });
         //console.log(data);
         setImageUri(data.uri);
-        
       } catch (error) {
         console.log(error);
       }
@@ -126,8 +122,8 @@ export default function ArtistPaintingPic({navigation}) {
   };
 
   const savePicture = async () => {
+    setIsLoading(true);
     if (imageUri) {
-
       const formData = new FormData();
       formData.append("attachment", {
         uri: imageUri,
@@ -148,21 +144,25 @@ export default function ArtistPaintingPic({navigation}) {
 
         serverResponseArtistPic.current = JSON.stringify(response.data[0]);
 
-        console.log("server response inside try - " + serverResponseArtistPic.current);
-         dispatch( updatePaintingArtistPic(serverResponseArtistPic.current ));
-         dispatch( updatePaintingArtistImage(imageUri))
+        console.log(
+          "server response inside try - " + serverResponseArtistPic.current
+        );
+        dispatch(updatePaintingArtistPic(serverResponseArtistPic.current));
+        dispatch(updatePaintingArtistImage(imageUri));
 
+        setImageUri(null);
+        setIsLoading(false);
+        alert("Picture saved! 🎉");
+
+        //console.log("image saved successfully");
+
+        navigation.replace("FullPaintingPic");
       } catch (error) {
+        setIsLoading(false);
+        alert("Upload failed. Try again.");
+        navigation.replace("ArtistPaintingPic");
         console.log(error);
       }
-
-      
-      setImageUri(null);
-      //alert("Picture saved! 🎉");
-
-      //console.log("image saved successfully");
-
-      navigation.replace("FullPaintingPic");
     }
   };
 
@@ -231,23 +231,28 @@ export default function ArtistPaintingPic({navigation}) {
 
       <View style={styles.controls}>
         {imageUri ? (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 50,
-            }}
-          >
-            <Button
-              title="Re-take"
-              onPress={() => setImageUri(null)}
-              icon="retweet"
-            />
-            <Button
-              title="Save"
-              onPress={savePicture}
-              icon="check"
-            />
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 50,
+              }}
+            >
+              <Button
+                title="Re-take"
+                onPress={() => setImageUri(null)}
+                icon="retweet"
+              />
+              <Button title="Save" onPress={savePicture} icon="check" />
+            </View>
+            {isLoading && (
+              <LoadingComponent
+                isLoading={isLoading}
+                color={"white"}
+                style={{ bottom: 300 }}
+              />
+            )}
           </View>
         ) : (
           <Button title="Capture" onPress={takePicture} icon="camera" />
