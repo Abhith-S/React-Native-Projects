@@ -19,7 +19,7 @@ const AuthenticationScreens = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Welcome"
+        name="WelcomeScreen"
         component={WelcomeScreen}
         options={{
           headerShown: false,
@@ -35,6 +35,11 @@ const AuthenticationScreens = () => {
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
+        options={{ headerTitle: "", headerTransparent: true }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={Home}
         options={{ headerTitle: "", headerTransparent: true }}
       />
     </Stack.Navigator>

@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const useAuthUrl = "http://139.59.69.142:5000/api/me";
 
-export default Home = () => {
+export default Home = ({navigation}) => {
 
     const dispatch = useDispatch();
 
@@ -18,6 +18,7 @@ export default Home = () => {
   const handleLogout = ()=>{
     dispatch(updateLoginToken({token:""}))
     AsyncStorage.removeItem("token");
+    navigation.replace("WelcomeScreen")
   }
 
   const headers = {

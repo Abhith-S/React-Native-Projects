@@ -157,7 +157,7 @@ const LoginScreen = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Register");
+            navigation.replace("Register");
           }}
           style={{
             padding: Spacing,

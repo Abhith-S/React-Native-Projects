@@ -33,10 +33,7 @@ const LoginScreen = ({navigation}) => {
   const handleSignIn = async () => {
 
     if(email == "" || password == "" ){
-      Alert.alert("Alert", "Enter a valid email and password.", [
-          
-        { text: "OK"},
-      ])
+      alert("Enter a valid email and password.")
     }else{
     try {
       const response = await axios({
@@ -58,10 +55,7 @@ const LoginScreen = ({navigation}) => {
       
     } catch (err) {
       console.log(err);
-      err && Alert.alert("Alert", "Enter a valid email and password.", [
-          
-        { text: "OK" },
-      ])
+      err && alert("Enter a valid email and password.")
     }
   }
 
@@ -143,7 +137,7 @@ const LoginScreen = ({navigation}) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {navigation.navigate("Register")}}
+          onPress={() => {navigation.replace("Register")}}
           style={{
             padding: Spacing,
           }}

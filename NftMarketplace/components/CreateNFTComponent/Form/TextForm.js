@@ -1,4 +1,4 @@
-// Formik x React Native example
+// react imports
 import React, { useState } from "react";
 import {
   Button,
@@ -10,9 +10,12 @@ import {
   TouchableOpacity,
   Alert
 } from "react-native";
+
+//redux
 import { useDispatch } from "react-redux";
 import { updateTextForm } from "../../../src/features/textForm/textFormSlice";
 
+//compoents imports
 import AppTextInput from "../../AppTextInput";
 import { Colors, FontSize, Spacing } from "../../../constants/ConstantsExports";
 

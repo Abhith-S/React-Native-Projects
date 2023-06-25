@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React,{useState} from "react";
 import Spacing from "../../constants/Spacing";
 import FontSize from "../../constants/FontSize";
 import Colors from "../../constants/Colors";
@@ -16,9 +16,59 @@ import { Ionicons } from "@expo/vector-icons";
 // import { RootStackParamList } from "../types";
 import AppTextInput from "../AppTextInput";
 
-//type Props = NativeStackScreenProps<RootStackParamList, "Register">;
+import axios from "axios";
 
-const RegisterScreen = ({navigation}) => {
+const registerUserUrl = "http://139.59.69.142:5000/api/register";
+
+import { useDispatch } from "react-redux";
+import { updateLoginToken } from "../../src/features/loginToken/loginTokenSlice";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const RegisterScreen = ({ navigation }) => {
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleSignUp = async () => {
+    if ((userName != "", email != "" && password != "")) {
+      try {
+        const response = await axios({
+          method: "post",
+          url: registerUserUrl,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            name: userName,
+            email: email,
+            password: password,
+          },
+        });
+
+        console.log(response.data);
+
+        dispatch(updateLoginToken({ token: response.data.token }));
+
+        AsyncStorage.setItem("token", response.data.token);
+
+        
+      } catch (err) {
+        console.log(err);
+        alert("Failed. Try again");
+      }
+    } else if (userName == "") {
+      alert("Name required");
+    } else if (email == "") {
+      alert("Email required");
+    } else if (password == "") {
+      alert("Password required");
+    }
+  };
+
   return (
     <SafeAreaView>
       <View
@@ -41,29 +91,28 @@ const RegisterScreen = ({navigation}) => {
           >
             Create account
           </Text>
-          {/* <Text
-            style={{
-              //fontFamily: Font["poppins-regular"],
-              fontSize: FontSize.small,
-              maxWidth: "80%",
-              textAlign: "center",
-            }}
-          >
-            Create an account so you can explore all the existing jobs
-          </Text> */}
         </View>
         <View
           style={{
             marginTop: Spacing,
           }}
         >
-          <AppTextInput placeholder="Email" />
-          <AppTextInput placeholder="Password" />
-          <AppTextInput placeholder="Confirm Password" />
+          <AppTextInput
+            placeholder="Name"
+            onChangeText={(text) => setUserName(text)}
+          />
+          <AppTextInput
+            placeholder="Email"
+            onChangeText={(text) => setEmail(text)}
+          />
+          <AppTextInput
+            placeholder="Password"
+            onChangeText={(text) => setPassword(text)}
+          />
         </View>
 
         <TouchableOpacity
-         //onPress={() => {navigation.navigate("Dashboard")}}
+          onPress={handleSignUp}
           style={{
             padding: Spacing * 2,
             backgroundColor: Colors.primary,
@@ -90,7 +139,9 @@ const RegisterScreen = ({navigation}) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {navigation.navigate("Login")}}
+          onPress={() => {
+            navigation.replace("Login");
+          }}
           style={{
             padding: Spacing,
           }}

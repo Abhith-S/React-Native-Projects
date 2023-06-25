@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import Spacing from "../constants/Spacing";
@@ -13,64 +14,70 @@ import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
 import Font from "../constants/Font";
 import { Ionicons } from "@expo/vector-icons";
-// import { NativeStackScreenProps } from "@react-navigation/native-stack";
-// import { RootStackParamList } from "../types";
+
 import AppTextInput from "../components/AppTextInput";
 
 import axios from "axios";
 
-//const registerUserUrl = "http://139.59.69.142:5000/api/token";
+const registerUserUrl = "http://139.59.69.142:5000/api/register";
 
-//type Props = NativeStackScreenProps<RootStackParamList, "Register">;
+import { useDispatch } from "react-redux";
+import { updateLoginToken } from "../src/features/loginToken/loginTokenSlice";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const RegisterScreen = ({ navigation }) => {
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
 
-  const [confirmPassword, setConfirmPassword] = useState("");
-
   const [token,setToken] = useState("")
 
-  const handleSignUp = () => {
-    if(password != confirmPassword || password == ""){
-      Alert.alert("Alert", "Passwords doesn't match.", [
-          
-          { text: "OK", onPress: () => {console.log("OK Pressed")} },
-        ])
-      }else{
-          const registerUser = async()=>{
-            try{
-              const response = await axios({
-                method: "post",
-                url: registerUserUrl,
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                data: {
-                  email:email,
-                  password:password
-                },
-              });
+  const dispatch = useDispatch();
 
-              console.log(response)
-              setToken(response);
-            }
-            catch(err){
-              console.log(err);
-            }
+  const handleSignUp = async () => {
+    if (
+      (userName != "",
+      email != "" && password != "")
+    ) {
+      try {
+        const response = await axios({
+          method: "post",
+          url: registerUserUrl,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            name: userName,
+            email: email,
+            password: password,
+          },
+        });
 
-            console.log("done 1")
-          }
+        console.log(response.data);
 
-          registerUser()
+        dispatch(updateLoginToken({token:response.data.token}))
 
-          console.log("done 2")
+      AsyncStorage.setItem("token",response.data.token)
+
+      navigation.replace("Home")
+
+      } catch (err) {
+        console.log(err);
+        alert("Failed. Try again")
       }
+    }else if (userName == "") {
+      alert("Name required");
+    } else if (email == "") {
+      alert("Email required");
+    } else if (password == "") {
+      alert("Password required");
+    }
   };
 
   //console.log(token)
-
 
   return (
     <SafeAreaView>
@@ -94,22 +101,16 @@ const RegisterScreen = ({ navigation }) => {
           >
             Create account
           </Text>
-          {/* <Text
-            style={{
-              //fontFamily: Font["poppins-regular"],
-              fontSize: FontSize.small,
-              maxWidth: "80%",
-              textAlign: "center",
-            }}
-          >
-            Create an account so you can explore all the existing jobs
-          </Text> */}
         </View>
         <View
           style={{
             marginTop: Spacing,
           }}
         >
+          <AppTextInput
+            placeholder="Name"
+            onChangeText={(text) => setUserName(text)}
+          />
           <AppTextInput
             placeholder="Email"
             onChangeText={(text) => setEmail(text)}
@@ -118,10 +119,7 @@ const RegisterScreen = ({ navigation }) => {
             placeholder="Password"
             onChangeText={(text) => setPassword(text)}
           />
-          <AppTextInput
-            placeholder="Confirm Password"
-            onChangeText={(text) => setConfirmPassword(text)}
-          />
+         
         </View>
 
         <TouchableOpacity
@@ -153,7 +151,7 @@ const RegisterScreen = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Login");
+            navigation.replace("Login");
           }}
           style={{
             padding: Spacing,
