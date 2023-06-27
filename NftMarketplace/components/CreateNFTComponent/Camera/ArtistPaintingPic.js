@@ -105,13 +105,13 @@ export default function ArtistPaintingPic({ navigation }) {
   };
 
   const takePicture = async () => {
-    if (cameraRef && faceData.length > 0) {
+    if (cameraRef) {
       //&& faceData.length > 0
       try {
         const data = await cameraRef.current.takePictureAsync({
           skipProcessing: true,
         });
-        //console.log(data);
+        console.log(data);
         setImageUri(data.uri);
       } catch (error) {
         console.log(error);
@@ -142,11 +142,12 @@ export default function ArtistPaintingPic({ navigation }) {
           data: formData,
         });
 
-        serverResponseArtistPic.current = JSON.stringify(response.data[0]);
+        //console.log(response.data)
 
-        console.log(
-          "server response inside try - " + serverResponseArtistPic.current
-        );
+        serverResponseArtistPic.current = response.data[0];
+
+        console.log(serverResponseArtistPic.current);
+
         dispatch(updatePaintingArtistPic(serverResponseArtistPic.current));
         dispatch(updatePaintingArtistImage(imageUri));
 

@@ -6,7 +6,6 @@ import {
   TextInput,
   Button,
 } from "react-native";
-import CategoriesCard from "./Body/CategoriesCard";
 import SearchBar from "./Buttons/Search";
 import Filter from "./Buttons/Filter";
 import Refresh from "./Buttons/Refresh";

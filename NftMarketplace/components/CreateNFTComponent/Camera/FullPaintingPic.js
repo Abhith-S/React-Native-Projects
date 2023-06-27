@@ -82,11 +82,9 @@ export default function FullPaintingPic({ navigation }) {
           data: formData,
         });
 
-        serverResponseFullPic.current = JSON.stringify(response.data[0]);
+        serverResponseFullPic.current = response.data[0];
 
-        console.log(
-          "server response inside try FULL - " + serverResponseFullPic.current
-        );
+        console.log(serverResponseFullPic.current);
         dispatch(updateFullPaintingPic(serverResponseFullPic.current));
         dispatch(updateFullPaintingImage(imageUri));
 

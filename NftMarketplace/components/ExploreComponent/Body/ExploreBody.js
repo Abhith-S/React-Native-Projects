@@ -8,29 +8,13 @@ import {
   Image,
 } from "react-native";
 
+//redux
+import { useSelector } from "react-redux";
+
 const ExploreBody = () => {
-  const images = [
-    
-    require("../../../assets/images/13.png"),
-    require("../../../assets/images/15.png"),
-    require("../../../assets/images/14.png"),
-    require("../../../assets/images/49.png"),
-    require("../../../assets/images/17.png"),
-    require("../../../assets/images/24.png"),
-    require("../../../assets/images/41.jpg"),
-    require("../../../assets/images/41.png"),
-    require("../../../assets/images/26.1.png"),
-    require("../../../assets/images/22.png"),
-    require("../../../assets/images/51.png"),
-    require("../../../assets/images/18.png"),
-    require("../../../assets/images/45.png"),
-    require("../../../assets/images/1.png"),
-    require("../../../assets/images/47.jpeg"),
-    require("../../../assets/images/48.png"),
-    
-    require("../../../assets/images/46.png"),
-    
-  ];
+
+  const response = useSelector((state) => state.serverData.serverResponse);
+ // console.log(response);
 
   return (
     <View style={styles.container}>
@@ -39,12 +23,15 @@ const ExploreBody = () => {
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}
         overScrollMode={"never"}
-        data={images}
-        keyExtractor={(item) => item}
+        data={response.data}
+        keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => {
           return (
+          
             <View style={styles.imageContainer}>
-              <Image source={item} key={index} style={styles.listImage} />
+              <Image source={{ uri: item.image.original }} key={item.id} style={styles.listImage} />
+              <Text>{item.name}</Text>
+              <Text>$ {item.price}</Text>
             </View>
           );
         }}

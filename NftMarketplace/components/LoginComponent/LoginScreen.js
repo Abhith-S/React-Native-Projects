@@ -17,7 +17,7 @@ import axios from "axios";
 
 //component imports
 import {Colors,Spacing,FontSize} from "../../constants/ConstantsExports"
-import AppTextInput from "../AppTextInput";
+import TextInputComponent from "../TextInputComponent";
 import { updateLoginToken } from "../../src/features/loginToken/loginTokenSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -91,8 +91,8 @@ const LoginScreen = ({navigation}) => {
             marginBottom: Spacing*3,
           }}
         >
-          <AppTextInput placeholder="Email" onChangeText={(text) => setEmail(text)}/>
-          <AppTextInput placeholder="Password" onChangeText={(text) => setPassword(text)}/>
+          <TextInputComponent placeholder="Email" onChangeText={(text) => setEmail(text)}/>
+          <TextInputComponent placeholder="Password" onChangeText={(text) => setPassword(text)}/>
         </View>
 
         <View>

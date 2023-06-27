@@ -82,11 +82,9 @@ export default function RightPaintingPic({ navigation }) {
           data: formData,
         });
 
-        serverResponseRightPic.current = JSON.stringify(response.data[0]);
+        serverResponseRightPic.current = response.data[0];
 
-        console.log(
-          "server response inside try RIGHT- " + serverResponseRightPic.current
-        );
+        console.log(serverResponseRightPic.current);
         dispatch(updateRightPaintingPic(serverResponseRightPic.current));
         dispatch(updateRightPaintingImage(imageUri));
 

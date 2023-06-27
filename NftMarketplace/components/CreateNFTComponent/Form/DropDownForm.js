@@ -19,7 +19,6 @@ import { useDispatch } from "react-redux";
 import { updateDropDownForm } from "../../../src/features/dropDownForm/dropDownFormSlice";
 
 //component import
-import MultiPicker from "./MutiPickerComponent";
 import { Colors, Spacing, FontSize } from "../../../constants/ConstantsExports";
 
 //data

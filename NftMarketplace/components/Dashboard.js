@@ -24,7 +24,7 @@ export default Dashboard = () => {
           headerShown: false,
         }}
       >
-        {/* <Tab.Screen
+        <Tab.Screen
           name="Home"
           component={Home}
           options={{
@@ -56,7 +56,7 @@ export default Dashboard = () => {
             tabBarLabel: "Cart",
             tabBarIcon: () => <MaterialIcons name="shopping-cart" size={23} />,
           }}
-        /> */}
+        />
          <Tab.Screen
           name="Profile"
           component={Profile}

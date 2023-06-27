@@ -1,3 +1,4 @@
+//to create a loading like component
 import * as React from 'react';
 import { ActivityIndicator } from 'react-native-paper';
 import {Colors} from "../constants/ConstantsExports"

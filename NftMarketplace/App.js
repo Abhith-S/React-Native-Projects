@@ -1,7 +1,5 @@
 //react packages
-import {
-  StyleSheet
-} from "react-native";
+import { StyleSheet } from "react-native";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import { useEffect, useLayoutEffect, useState } from "react";
 
@@ -10,6 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
+import axios from "axios";
 
 //components imports
 import {
@@ -18,9 +17,16 @@ import {
   RegisterScreen,
 } from "./components/ComponentsExport";
 import Dashboard from "./components/Dashboard";
+import { CheckConnection } from "./components/CheckSpecsComponent/CheckConnection";
+
+//redux
+import { updateServerResponse } from "./src/features/serverData/serverDataSlice";
 import store from "./src/app/store";
 import { updateLoginToken } from "./src/features/loginToken/loginTokenSlice";
-import { CheckConnection } from "./components/CheckSpecsComponent/CheckConnection";
+
+//to get data from server
+const serverDataUrl =
+  "http://139.59.69.142:5000/api/products?search=status:publish";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +41,6 @@ const AuthenticationScreens = () => {
           contentStyle: { backgroundColor: "white" },
         }}
         style={styles.container}
-       
       />
       <Stack.Screen
         name="Login"
@@ -76,6 +81,8 @@ const Navigation = () => {
 function Root() {
   //to check for login token
   const [isTryingLogin, setIsTryingLogin] = useState(true);
+
+  //redux
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -87,42 +94,49 @@ function Root() {
       if (storedToken) {
         dispatch(updateLoginToken({ token: storedToken }));
       }
-      setIsTryingLogin(false);
     }
-
     fetchToken();
-    
-  }, []);
 
-  
+    //data ffrom server
+    const getData = async () => {
+      try {
+        const response = await axios.get(serverDataUrl);
+        //setServerResponse(response.data);
+
+        dispatch(updateServerResponse({ serverResponse: response.data }));
+        //console.log(response.data)
+
+        //console.log(response.data.data[4].image.thumbnail);
+        setIsTryingLogin(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getData();
+  }, []);
 
   if (!isTryingLogin) {
     SplashScreen.hideAsync();
     return <Navigation />;
   }
-
-  
 }
 
 export default function App() {
-
   //to chcek internet connection
   const [hasConnection, setHasConnection] = useState(null);
 
   //fn to check internet
-  const checkInternet = ()=>{
+  const checkInternet = () => {
     CheckConnection().then((res) => {
       setHasConnection(res);
     });
-  }
+  };
 
-  //NOTE : removing useEffect and putting fn outside makes the fn execute earlier 
+  //NOTE : removing useEffect and putting fn outside makes the fn execute earlier
   //this is good for implementing alerts
-  useEffect(()=>{
-    checkInternet()
-  },[])
-  
- 
+  useEffect(() => {
+    checkInternet();
+  }, []);
 
   return (
     <Provider store={store}>

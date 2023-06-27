@@ -82,11 +82,9 @@ export default function LeftPaintingPic({ navigation }) {
           data: formData,
         });
 
-        serverResponseLeftPic.current = JSON.stringify(response.data[0]);
+        serverResponseLeftPic.current = response.data[0];
 
-        console.log(
-          "server response inside try LEFT- " + serverResponseLeftPic.current
-        );
+        console.log(serverResponseLeftPic.current);
         dispatch(updateLeftPaintingPic(serverResponseLeftPic.current));
         dispatch(updateLeftPaintingImage(imageUri));
 

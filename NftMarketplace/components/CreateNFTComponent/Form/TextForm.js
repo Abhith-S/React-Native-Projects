@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import { updateTextForm } from "../../../src/features/textForm/textFormSlice";
 
 //compoents imports
-import AppTextInput from "../../AppTextInput";
+import TextInputComponent from "../../TextInputComponent";
 import { Colors, FontSize, Spacing } from "../../../constants/ConstantsExports";
 
 const TextForm = (props) => {
@@ -71,16 +71,16 @@ const TextForm = (props) => {
             marginBottom: Spacing * 3,
           }}
         >
-          <AppTextInput
+          <TextInputComponent
             onChangeText={(newText) => setPaintingName(newText)}
             placeholder="Painting Name"
           />
-          <AppTextInput
+          <TextInputComponent
             onChangeText={(newText) => setPaintingDescription(newText)}
             placeholder="Painting Description"
           />
 
-          <AppTextInput
+          <TextInputComponent
             onChangeText={(newText) => setPrice(newText)}
             placeholder="Price"
             inputMode="numeric"
