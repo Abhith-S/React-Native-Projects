@@ -105,7 +105,7 @@ export default function ArtistPaintingPic({ navigation }) {
   };
 
   const takePicture = async () => {
-    if (cameraRef) {
+    if (cameraRef && faceData.length > 0) {
       //&& faceData.length > 0
       try {
         const data = await cameraRef.current.takePictureAsync({

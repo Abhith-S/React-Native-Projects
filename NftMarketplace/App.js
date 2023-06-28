@@ -1,6 +1,5 @@
 //react packages
 import { StyleSheet } from "react-native";
-import { Provider, useSelector, useDispatch } from "react-redux";
 import { useEffect, useLayoutEffect, useState } from "react";
 
 //external packages
@@ -20,9 +19,10 @@ import Dashboard from "./components/Dashboard";
 import { CheckConnection } from "./components/CheckSpecsComponent/CheckConnection";
 
 //redux
-import { updateServerResponse } from "./src/features/serverData/serverDataSlice";
+import { updateNextPageUrl, updateResponseData } from "./src/features/serverData/serverResponseSlice";
 import store from "./src/app/store";
 import { updateLoginToken } from "./src/features/loginToken/loginTokenSlice";
+import { Provider, useSelector, useDispatch } from "react-redux";
 
 //to get data from server
 const serverDataUrl =
@@ -103,8 +103,9 @@ function Root() {
         const response = await axios.get(serverDataUrl);
         //setServerResponse(response.data);
 
-        dispatch(updateServerResponse({ serverResponse: response.data }));
-        //console.log(response.data)
+        dispatch(updateResponseData({ responseData: response.data }));
+        dispatch(updateNextPageUrl ({nextPageUrl : response.next_page_url }))
+      //console.log(response.next_page_url)
 
         //console.log(response.data.data[4].image.thumbnail);
         setIsTryingLogin(false);

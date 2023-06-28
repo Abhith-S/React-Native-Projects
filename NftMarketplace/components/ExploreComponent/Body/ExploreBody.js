@@ -1,3 +1,4 @@
+//react
 import {
   Text,
   View,
@@ -9,12 +10,55 @@ import {
 } from "react-native";
 
 //redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
+//external packages
+import axios from "axios";
+
+//component imports
+import LoadingComponent from "../../LoadingComponent";
+import { updateResponseData } from "../../../src/features/serverData/serverResponseSlice";
+import {Spacing,Colors} from "../../../constants/ConstantsExports"
+
+//no next Page url available now ,so for testign used this
+const serverDataUrl =
+  "http://139.59.69.142:5000/api/products?search=status:publish";
 
 const ExploreBody = () => {
 
-  const response = useSelector((state) => state.serverData.serverResponse);
- // console.log(response);
+  //redux
+  const dispatch = useDispatch();
+  const responseData = useSelector(
+    (state) => state.serverResponse.responseData
+  );
+  //console.log(responseData);
+  
+  const nextPageUrl = useSelector((state) => state.serverResponse.nextPageUrl);
+  //console.log(nextPageUrl)
+
+  const handleForwardPagination = async () => {
+
+    try{
+
+    const response = await axios.get(serverDataUrl);
+    const newResponseData = response.data;
+
+    // Merge the new data with the existing responseData
+    const mergedResponseData = {
+      ...responseData,
+      data: [...responseData.data, ...newResponseData.data],
+    };
+
+    // Dispatch the updated data
+    dispatch(updateResponseData({ responseData: mergedResponseData }));
+
+    //console.log(mergedResponseData.next_page_url);
+    
+    }catch(err){
+      console.log(err)
+    }
+    
+  };
 
   return (
     <View style={styles.container}>
@@ -23,13 +67,18 @@ const ExploreBody = () => {
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}
         overScrollMode={"never"}
-        data={response.data}
+        ListFooterComponent={<LoadingComponent color={Colors.primary} style={{marginBottom:Spacing*17}}/>}
+        //onEndReached={handleForwardPagination}
+        data={responseData.data}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => {
           return (
-          
             <View style={styles.imageContainer}>
-              <Image source={{ uri: item.image.original }} key={item.id} style={styles.listImage} />
+              <Image
+                source={{ uri: item.image.original }}
+                key={item.id}
+                style={styles.listImage}
+              />
               <Text>{item.name}</Text>
               <Text>$ {item.price}</Text>
             </View>
@@ -40,11 +89,6 @@ const ExploreBody = () => {
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: "43%",
-  },
   listImage: {
     width: 150,
     height: 150,

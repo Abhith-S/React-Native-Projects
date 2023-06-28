@@ -4,7 +4,7 @@ import dropDownFormSlice from '../features/dropDownForm/dropDownFormSlice'
 import picturesSlice from "../features/pictures/picturesSlice";
 import loginTokenSlice from "../features/loginToken/loginTokenSlice";
 import imagesUriSlice from "../features/imagesUri/imagesUriSlice";
-import serverDataSlice from "../features/serverData/serverDataSlice";
+import serverResponseSlice from "../features/serverData/serverResponseSlice";
 
 const store = configureStore({
     reducer: {
@@ -13,7 +13,7 @@ const store = configureStore({
         pictures: picturesSlice,
         loginToken : loginTokenSlice,
         imagesUri : imagesUriSlice,
-        serverData : serverDataSlice,
+        serverResponse: serverResponseSlice,
     }
 })
 

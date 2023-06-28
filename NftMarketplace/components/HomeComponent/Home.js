@@ -17,11 +17,11 @@ import { Colors, FontSize, Spacing } from "../../constants/ConstantsExports";
 import { useSelector } from "react-redux";
 
 const Home = () => {
-  const response = useSelector((state) => state.serverData.serverResponse);
+  const responseData = useSelector((state) => state.serverResponse.responseData);
   //console.log(response);
 
   //create a random number
-  let randomNumber = Math.floor(Math.random() * response.count);
+  let randomNumber = Math.floor(Math.random() * responseData.count);
   //console.log(randomNumber)
 
   return (
@@ -32,12 +32,12 @@ const Home = () => {
     >
       <View style={styles.container_mainImageContainer}>
         <Image
-          source={{ uri: response.data[randomNumber].image.original }}
+          source={{ uri: responseData.data[randomNumber].image.original }}
           style={styles.mainImageContainer_image}
         />
 
         <Text style={{ fontSize: FontSize.large, marginVertical: Spacing }}>
-          {response.data[randomNumber].name}
+          {responseData.data[randomNumber].name}
         </Text>
       </View>
 
@@ -50,7 +50,7 @@ const Home = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         overScrollMode={"never"}
-        data={response.data}
+        data={responseData.data}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => {
           return (
@@ -70,7 +70,7 @@ const Home = () => {
 
       <Text style={styles.container_mainHeading}>Trending</Text>
       <View style={styles.container_trending}>
-        {response.data.map((item, index) => {
+        {responseData.data.map((item, index) => {
           return (
             <View style={styles.trending_imageContainer} key={item.id}>
               <Text style={{ fontSize: 17 }}>{index + 1}</Text>

@@ -11,8 +11,8 @@ import { MaterialCommunityIcons } from "react-native-vector-icons";
 import { useSelector } from "react-redux";
 
 const Cart = ({ navigation }) => {
-  const response = useSelector((state) => state.serverData.serverResponse);
-  let randomNumber = Math.floor(Math.random() * response.count);
+  const responseData = useSelector((state) => state.serverResponse.responseData);
+  let randomNumber = Math.floor(Math.random() * responseData.count);
 
   return (
     <View
@@ -64,11 +64,11 @@ const Cart = ({ navigation }) => {
           style={{ paddingHorizontal: 16, alignItems: "center", margin: 20 }}
         >
           <Image
-            source={{ uri: response.data[randomNumber].image.original }}
+            source={{ uri: responseData.data[randomNumber].image.original }}
             style={{ width: "100%", height: 200 }}
           />
-          <Text style={{ marginTop: 10, fontSize: 17 }}>{response.data[randomNumber].name}</Text>
-          <Text style={{textAlign:"center",marginTop:10}}>{response.data[randomNumber].description}</Text>
+          <Text style={{ marginTop: 10, fontSize: 17 }}>{responseData.data[randomNumber].name}</Text>
+          <Text style={{textAlign:"center",marginTop:10}}>{responseData.data[randomNumber].description}</Text>
         </View>
         <View>
           <View
@@ -277,7 +277,7 @@ const Cart = ({ navigation }) => {
                   opacity: 0.8,
                 }}
               >
-                $ {response.data[randomNumber].price}.00
+                $ {responseData.data[randomNumber].price}.00
               </Text>
             </View>
             <View
@@ -335,7 +335,7 @@ const Cart = ({ navigation }) => {
                   color: COLOURS.black,
                 }}
               >
-               $ {response.data[randomNumber].price + 50}  
+               $ {responseData.data[randomNumber].price + 50}  
                {/* rupee symbol -  &#8377; */}
               </Text>
             </View>
@@ -372,7 +372,7 @@ const Cart = ({ navigation }) => {
               textTransform: "uppercase",
             }}
           >
-            CHECKOUT ($ {response.data[randomNumber].price + 200} )
+            CHECKOUT ($ {responseData.data[randomNumber].price + 200} )
           </Text>
         </TouchableOpacity>
       </View>

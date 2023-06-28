@@ -109,7 +109,7 @@ export default DropDownForm = ({ navigation }) => {
                   orientation: selectedOrientation,
                 })
               );
-  
+              
               navigation.replace("ArtistPaintingPic");
             },
           },
