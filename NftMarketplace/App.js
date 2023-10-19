@@ -80,7 +80,7 @@ const Navigation = () => {
 
 function Root() {
   //to check for login token
-  const [isTryingLogin, setIsTryingLogin] = useState(true);
+  const [isTryingLogin, setIsTryingLogin] = useState(false);
 
   //redux
   const dispatch = useDispatch();
